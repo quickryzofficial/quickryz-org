@@ -39,3 +39,21 @@ test("amountInWords spells out Indian numbering", () => {
   );
   assert.equal(amountInWords(83653), "Rupees Eighty Three Thousand Six Hundred Fifty Three Only");
 });
+
+test("formatMoney: Indian grouping with paise", () => {
+  const { formatMoney } = require("../src/helpers");
+  assert.equal(formatMoney(100000), "₹1,00,000.00");
+  assert.equal(formatMoney(118000.5), "₹1,18,000.50");
+  assert.equal(formatMoney(999.999), "₹1,000.00");
+  assert.equal(formatMoney(0), "₹0.00");
+});
+
+test("amountInWordsWithPaise: adds paise only when present", () => {
+  const { amountInWordsWithPaise } = require("../src/helpers");
+  assert.equal(amountInWordsWithPaise(118000), "Rupees One Lakh Eighteen Thousand Only");
+  assert.equal(
+    amountInWordsWithPaise(1180.01),
+    "Rupees One Thousand One Hundred Eighty and One Paise Only"
+  );
+  assert.equal(amountInWordsWithPaise(0.5), "Rupees Zero and Fifty Paise Only");
+});

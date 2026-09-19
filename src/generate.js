@@ -6,6 +6,7 @@ const Handlebars = require("handlebars");
 const helpers = require("./helpers");
 const { getTypeConfig, ROOT } = require("./registry");
 const { validateData } = require("./validate");
+const invoice = require("./invoice");
 
 let helpersRegistered = false;
 function registerHelpers() {
@@ -14,6 +15,8 @@ function registerHelpers() {
   Handlebars.registerHelper("formatMonthYear", helpers.formatMonthYear);
   Handlebars.registerHelper("formatCurrency", helpers.formatCurrency);
   Handlebars.registerHelper("amountInWords", helpers.amountInWords);
+  Handlebars.registerHelper("formatMoney", helpers.formatMoney);
+  Handlebars.registerHelper("amountInWordsWithPaise", helpers.amountInWordsWithPaise);
   Handlebars.registerHelper("eq", (a, b) => a === b);
   helpersRegistered = true;
 }
@@ -34,6 +37,9 @@ function loadCompanyConfig() {
   const company = JSON.parse(raw);
   if (company.logo) {
     company.logoAbsolute = imageToDataUri(path.join(ROOT, company.logo));
+  }
+  if (company.brandLogo) {
+    company.brandLogoAbsolute = imageToDataUri(path.join(ROOT, company.brandLogo));
   }
   if (company.signatory && company.signatory.signatureImage) {
     const sigPath = path.join(ROOT, company.signatory.signatureImage);
@@ -133,8 +139,61 @@ async function generate(typeId, data, options = {}) {
   return outputPath;
 }
 
+// Generates an invoice PDF: fills in number/dates, computes totals and GST,
+// renders, and only then advances the invoice counter.
+async function generateInvoice(data) {
+  validateData("invoice", data);
+  const company = loadCompanyConfig();
+  const settings = company.invoice || {};
+  const dueDays = settings.dueDays ?? 15;
+  const invoiceDate = data.invoiceDate || invoice.localTodayIso();
+  const dueDate = data.dueDate || invoice.addDays(invoiceDate, dueDays);
+
+  const outDir = path.join(ROOT, "output", "invoice");
+  const counterPath = path.join(ROOT, "data", "invoice-counter.json");
+  const issued = data.invoiceNumber
+    ? null
+    : invoice.nextInvoiceNumber({
+        counterPath,
+        outputDir: outDir,
+        prefix: settings.prefix || "INV",
+        year: Number(invoiceDate.slice(0, 4)),
+      });
+  const invoiceNumber = data.invoiceNumber || issued.invoiceNumber;
+
+  const totals = invoice.computeInvoice(data, company);
+  const html = renderHtml("invoice", {
+    ...data,
+    invoiceNumber,
+    invoiceDate,
+    dueDate,
+    dueDays,
+    totals,
+    isTaxInvoice: totals.gstType !== "none",
+    isIntraState: totals.gstType === "intra",
+    sacCode: settings.sacCode,
+    notes: data.notes || settings.notes || [],
+  });
+
+  fs.mkdirSync(outDir, { recursive: true });
+  const outputPath = path.join(
+    outDir,
+    `Invoice_${invoiceNumber}_${slugifyName(data.client.name)}.pdf`
+  );
+  await htmlToPdf(html, outputPath);
+  if (issued) invoice.saveInvoiceCounter(counterPath, issued);
+
+  const bank = company.bank || {};
+  const warnings = [];
+  if (!bank.bankName || !bank.accountNumber || !bank.ifsc) {
+    warnings.push("Bank details (bankName/accountNumber/ifsc) are blank in config/company.json.");
+  }
+  return { outputPath, invoiceNumber, total: totals.total, warnings };
+}
+
 module.exports = {
   generate,
+  generateInvoice,
   renderHtml,
   loadCompanyConfig,
   loadJsonFile,

@@ -1,0 +1,24 @@
+{
+  "client": {
+    "name": "ABC Technologies Private Limited",
+    "address": "123 Business Park, Bengaluru, Karnataka – 560001",
+    "state": "Karnataka",
+    "attn": "Accounts Payable",
+    "email": "accounts@example.com"
+  },
+  "gst": false,
+  "items": [
+    {
+      "title": "Software Development & IT Consulting",
+      "description": "Professional services for digital transformation",
+      "qty": 1,
+      "rate": 75000
+    },
+    {
+      "title": "QA & Test Automation Services",
+      "description": "Automation framework and quality engineering support",
+      "qty": 1,
+      "rate": 25000
+    }
+  ]
+}

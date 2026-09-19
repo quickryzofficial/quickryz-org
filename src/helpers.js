@@ -69,6 +69,29 @@ function formatCurrency(amount) {
   return `₹${formatIndianNumber(amount)}`;
 }
 
+function toPaise(amount) {
+  return Math.round(Number((Number(amount) * 100).toPrecision(15)));
+}
+
+// Invoice amounts keep paise: 118000.5 -> "₹1,18,000.50"
+function formatMoney(amount) {
+  const paise = toPaise(amount);
+  const rupees = Math.trunc(paise / 100);
+  const fraction = String(Math.abs(paise % 100)).padStart(2, "0");
+  return `₹${formatIndianNumber(rupees)}.${fraction}`;
+}
+
+// "Rupees One Thousand One Hundred Eighty and One Paise Only"
+function amountInWordsWithPaise(amount) {
+  const paise = toPaise(amount);
+  const rupees = Math.trunc(paise / 100);
+  const fraction = paise % 100;
+  const words = `Rupees ${numberToIndianWords(rupees)}`;
+  return fraction > 0
+    ? `${words} and ${numberToIndianWords(fraction)} Paise Only`
+    : `${words} Only`;
+}
+
 const MONTH_NAMES = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -96,6 +119,8 @@ module.exports = {
   amountInWords,
   formatIndianNumber,
   formatCurrency,
+  formatMoney,
+  amountInWordsWithPaise,
   formatDate,
   formatMonthYear,
 };

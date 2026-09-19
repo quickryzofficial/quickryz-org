@@ -12,16 +12,11 @@
 <body>
 <div class="page">
   <div class="letterhead">
-    <div class="brand">
-      <img src="{{company.logoAbsolute}}" alt="logo" />
-      <div>
-        <div class="company-name">{{company.companyName}}</div>
-        <div class="tagline">{{company.tagline}}</div>
-      </div>
-    </div>
+    <img class="brand-logo" src="{{company.brandLogoAbsolute}}" alt="{{company.companyName}}" />
     <div class="contact">
       {{company.website}}<br />
-      {{company.hrEmail}}
+      {{company.hrEmail}}<br />
+      {{company.mobile}}
     </div>
   </div>
 
