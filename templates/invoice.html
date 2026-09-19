@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>{{{styles}}}</style>
+<style>
+  .inv-page { padding: 34px 44px 28px; }
+  .inv-header { display: flex; justify-content: space-between; align-items: center; }
+  .inv-header .brand-logo { height: 62px; width: auto; display: block; }
+  .inv-title { text-align: right; }
+  .inv-title h1 { margin: 0; font-size: 34px; line-height: 1.05; letter-spacing: 1px; color: var(--navy); }
+  .inv-title .meta { font-size: 11px; color: var(--muted); line-height: 1.55; }
+  .inv-title .meta strong { color: var(--text); }
+  .inv-rule { height: 5px; background: var(--brand); margin: 14px 0 20px; }
+
+  .inv-parties { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border); background: #f5f8ff; }
+  .inv-parties > div { padding: 14px 16px; font-size: 11.5px; line-height: 1.55; }
+  .inv-parties > div + div { border-left: 1px solid var(--border); }
+  .inv-parties .label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--brand); margin-bottom: 4px; }
+  .inv-parties .name { font-weight: 700; font-size: 12.5px; color: var(--navy); }
+
+  table.inv-items { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 11.5px; }
+  table.inv-items th { background: var(--navy); color: #fff; font-weight: 600; font-size: 10.5px; letter-spacing: 0.4px; text-transform: uppercase; padding: 9px 10px; text-align: left; }
+  table.inv-items td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.inv-items tr:nth-child(even) td { background: #f5f8ff; }
+  table.inv-items .num { text-align: right; white-space: nowrap; }
+  table.inv-items .center { text-align: center; }
+  table.inv-items .desc { font-size: 10.5px; color: var(--muted); }
+
+  .inv-summary { display: flex; justify-content: space-between; gap: 24px; margin-top: 16px; }
+  .inv-words { flex: 1; font-size: 11px; color: var(--muted); padding-top: 8px; }
+  .inv-words strong { display: block; color: var(--text); font-size: 11.5px; margin-top: 2px; }
+  table.inv-totals { width: 300px; border-collapse: collapse; font-size: 12px; }
+  table.inv-totals td { padding: 7px 12px; }
+  table.inv-totals td.num { text-align: right; white-space: nowrap; }
+  table.inv-totals tr.grand td { border-top: 2px solid var(--brand); background: #eef3ff; font-weight: 700; font-size: 14px; color: var(--navy); padding: 10px 12px; }
+
+  .inv-info { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border); background: #f5f8ff; margin-top: 22px; }
+  .inv-info > div { padding: 14px 16px; font-size: 11px; line-height: 1.6; }
+  .inv-info > div + div { border-left: 1px solid var(--border); }
+  .inv-info .label { font-weight: 700; font-size: 11.5px; color: var(--navy); margin-bottom: 4px; }
+  .inv-info table { border-collapse: collapse; }
+  .inv-info table td { padding: 1px 10px 1px 0; vertical-align: top; }
+  .inv-info table td:first-child { color: var(--muted); white-space: nowrap; }
+  .inv-info ol { margin: 0; padding-left: 16px; }
+
+  .inv-sign { margin-top: 28px; font-size: 11.5px; }
+  .inv-sign .for { font-weight: 700; color: var(--navy); }
+  .inv-sign .inv-mark { position: relative; height: 64px; width: 260px; }
+  .inv-sign .inv-mark .sign { position: absolute; left: 0; bottom: 0; height: 56px; }
+  .inv-sign .inv-mark .seal { position: absolute; left: 124px; top: -4px; height: 92px; opacity: 0.85; transform: rotate(-10deg); }
+  .inv-sign .name { font-weight: 700; color: var(--navy); border-top: 1px solid var(--text); display: inline-block; min-width: 170px; padding-top: 5px; }
+  .inv-sign .role { color: var(--muted); font-size: 11px; }
+
+  .inv-footer { margin-top: 22px; background: var(--navy); color: #fff; text-align: center; font-weight: 600; font-size: 11.5px; padding: 11px; letter-spacing: 0.3px; }
+  .inv-footer small { display: block; font-weight: 400; color: #cbd5e1; font-size: 9.5px; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="inv-page">
+  <div class="inv-header">
+    <img class="brand-logo" src="{{company.brandLogoAbsolute}}" alt="{{company.companyName}}" />
+    <div class="inv-title">
+      <h1>{{#if isTaxInvoice}}TAX INVOICE{{else}}INVOICE{{/if}}</h1>
+      <div class="meta">
+        <strong>Invoice No.</strong> {{invoiceNumber}}<br />
+        <strong>Invoice Date:</strong> {{formatDate invoiceDate}}<br />
+        <strong>Due Date:</strong> {{formatDate dueDate}}
+      </div>
+    </div>
+  </div>
+  <div class="inv-rule"></div>
+
+  <div class="inv-parties">
+    <div>
+      <div class="label">From</div>
+      <div class="name">{{company.companyName}}</div>
+      Registered Office: {{company.registeredOffice}}<br />
+      Corporate Office: {{company.corporateOffice}}<br />
+      CIN: {{company.cin}}<br />
+      {{#if company.gstin}}GSTIN: {{company.gstin}}<br />{{/if}}
+      {{company.email}} &nbsp;|&nbsp; {{company.website}} &nbsp;|&nbsp; {{company.mobile}}
+    </div>
+    <div>
+      <div class="label">Bill To</div>
+      <div class="name">{{client.name}}</div>
+      {{client.address}}<br />
+      {{#if client.gstin}}GSTIN: {{client.gstin}}<br />{{/if}}
+      {{#if isTaxInvoice}}Place of Supply: {{client.state}}<br />{{/if}}
+      {{#if client.attn}}Attn: {{client.attn}}<br />{{/if}}
+      {{#if client.email}}Email: {{client.email}}{{/if}}
+    </div>
+  </div>
+
+  <table class="inv-items">
+    <thead>
+      <tr>
+        <th style="width:28px;">#</th>
+        <th>Description of Services</th>
+        {{#if isTaxInvoice}}<th class="center" style="width:64px;">SAC</th>{{/if}}
+        <th class="center" style="width:44px;">Qty</th>
+        <th class="num" style="width:110px;">Rate</th>
+        <th class="num" style="width:120px;">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each totals.lines}}
+      <tr>
+        <td>{{this.index}}</td>
+        <td>
+          {{this.title}}
+          {{#if this.description}}<div class="desc">{{this.description}}</div>{{/if}}
+        </td>
+        {{#if ../isTaxInvoice}}<td class="center">{{../sacCode}}</td>{{/if}}
+        <td class="center">{{this.qty}}</td>
+        <td class="num">{{formatMoney this.rate}}</td>
+        <td class="num">{{formatMoney this.amount}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <div class="inv-summary">
+    <div class="inv-words">
+      Amount in words
+      <strong>{{amountInWordsWithPaise totals.total}}</strong>
+    </div>
+    <table class="inv-totals">
+      <tr><td>Subtotal</td><td class="num">{{formatMoney totals.subtotal}}</td></tr>
+      {{#each totals.taxLines}}
+      <tr><td>{{this.label}}</td><td class="num">{{formatMoney this.amount}}</td></tr>
+      {{/each}}
+      <tr class="grand"><td>Total Amount</td><td class="num">{{formatMoney totals.total}}</td></tr>
+    </table>
+  </div>
+
+  <div class="inv-info">
+    <div>
+      <div class="label">Payment Details</div>
+      <table>
+        <tr><td>Account Name</td><td>{{company.bank.accountName}}</td></tr>
+        <tr><td>Bank</td><td>{{#if company.bank.bankName}}{{company.bank.bankName}}{{else}}—{{/if}}{{#if company.bank.branch}}, {{company.bank.branch}}{{/if}}</td></tr>
+        <tr><td>Account No.</td><td>{{#if company.bank.accountNumber}}{{company.bank.accountNumber}}{{else}}—{{/if}}</td></tr>
+        <tr><td>IFSC</td><td>{{#if company.bank.ifsc}}{{company.bank.ifsc}}{{else}}—{{/if}}</td></tr>
+        {{#if company.bank.upi}}<tr><td>UPI</td><td>{{company.bank.upi}}</td></tr>{{/if}}
+      </table>
+    </div>
+    <div>
+      <div class="label">Notes &amp; Terms</div>
+      <ol>
+        <li>Payment due within {{dueDays}} days from the invoice date.</li>
+        {{#each notes}}<li>{{this}}</li>{{/each}}
+        {{#unless isTaxInvoice}}<li>GST not charged on this invoice.</li>{{/unless}}
+      </ol>
+    </div>
+  </div>
+
+  <div class="inv-sign">
+    <div class="for">For {{company.companyName}}</div>
+    <div class="inv-mark">
+      {{#if company.signatory.signatureAbsolute}}<img class="sign" src="{{company.signatory.signatureAbsolute}}" alt="signature" />{{/if}}
+      {{#if company.sealAbsolute}}<img class="seal" src="{{company.sealAbsolute}}" alt="company seal" />{{/if}}
+    </div>
+    <div class="name">{{company.signatory.name}}</div>
+    <div class="role">{{company.signatory.title}}</div>
+  </div>
+
+  <div class="inv-footer">
+    {{company.tagline}}
+    <small>This is a computer-generated invoice.</small>
+  </div>
+</div>
+</body>
+</html>

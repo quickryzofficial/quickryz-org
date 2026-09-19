@@ -8,8 +8,7 @@
 <div class="page">
   <div class="certificate">
     <div class="brand-row">
-      <img src="{{company.logoAbsolute}}" alt="logo" />
-      <div class="company-name">{{company.companyName}}</div>
+      <img class="brand-logo" src="{{company.brandLogoAbsolute}}" alt="{{company.companyName}}" />
     </div>
 
     <div class="cert-heading">Certificate of Internship</div>
@@ -31,9 +30,10 @@
       </div>
       <div class="cert-id">Certificate ID: {{certificateId}}</div>
       <div class="sig">
-        {{#if company.signatory.signatureAbsolute}}
-        <img src="{{company.signatory.signatureAbsolute}}" alt="signature" style="height:36px;" /><br />
-        {{/if}}
+        <div class="sig-mark">
+          {{#if company.sealAbsolute}}<img class="seal" src="{{company.sealAbsolute}}" alt="company seal" />{{/if}}
+          {{#if company.signatory.signatureAbsolute}}<img class="sign" src="{{company.signatory.signatureAbsolute}}" alt="signature" />{{/if}}
+        </div>
         <div class="sig-line">
           {{company.signatory.name}}<br />{{company.signatory.title}}
         </div>

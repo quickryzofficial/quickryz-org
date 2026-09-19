@@ -84,6 +84,13 @@ const REGISTRY = {
     outPrefix: "AppreciationCertificate",
     landscape: true,
   },
+  invoice: {
+    label: "Invoice / Tax Invoice",
+    template: "invoice.html",
+    schema: "invoice.schema.json",
+    outPrefix: "Invoice",
+    landscape: false,
+  },
 };
 
 const ONBOARDING_KIT_TYPES = [

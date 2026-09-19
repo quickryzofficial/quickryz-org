@@ -1,7 +1,7 @@
-# hrgen — HR Document Generator
+# hrgen — QuickRyz Document Generator
 
-Turn a small JSON file into a ready-to-share PDF: offer letters, appointment
-letters, payslips, experience certificates — all of it. No AI, no internet
+Turn a few filled-in values into a ready-to-share QuickRyz PDF: offer letters,
+appointment letters, payslips, certificates and client invoices — all of it. No AI, no internet
 connection needed once it's installed. Everything runs on your own machine.
 
 ---
@@ -21,6 +21,7 @@ connection needed once it's installed. Everything runs on your own machine.
 | `internship-certificate` | Internship Certificate |
 | `course-certificate` | Course Completion Certificate |
 | `appreciation-certificate` | Appreciation Certificate (Above & Beyond) |
+| `invoice` | Client Invoice / Tax Invoice (with optional GST) |
 
 Run `node bin/hrgen.js list` any time to see this list from the tool itself.
 
@@ -39,7 +40,7 @@ node -v
 **Install:**
 
 ```bash
-cd Fresh2Tesh-Org
+cd QuickRyz-Org
 npm install
 ```
 
@@ -61,28 +62,96 @@ replace `hrgen` with `node bin/hrgen.js` everywhere below.
 
 ## 2. Set your company details once
 
-Open [`config/company.json`](config/company.json) and fill in your real
-details — company name, website, HR email, and the person who signs
-letters. Every document uses this automatically, so you never repeat it.
+Open [`config/company.json`](config/company.json) — it already holds the
+QuickRyz details (legal name, offices, CIN, website, email, mobile, signatory).
+Every document uses it automatically, so you never repeat it.
 
-```json
-{
-  "companyName": "Fresh2Tech",
-  "tagline": "Where Freshers Become Professionals.",
-  "address": "Remote-first, serving students and business digitalisation across India",
-  "website": "www.fresh2tech.com",
-  "hrEmail": "hello@fresh2tech.com",
-  "logo": "templates/assets/logo.png",
-  "signatory": { "name": "Pankaj Gupta", "title": "Founder, Fresh2Tech" }
-}
-```
+Before issuing invoices, fill in the blanks:
 
-To use your own logo, replace [`templates/assets/logo.png`](templates/assets/logo.png)
-with your own image (same filename), or update the `"logo"` path above.
+| Field | What to put |
+|---|---|
+| `bank.bankName`, `bank.accountNumber`, `bank.ifsc` (and optional `branch`, `upi`) | Printed under **Payment Details** on every invoice. Until filled, invoices show "—" and a warning is printed. |
+| `gstin`, `gstState` | QuickRyz's GSTIN and the state it is registered in (e.g. `"Karnataka"`). Required only when you bill with `GST=true`. |
+| `invoice.sacCode` | SAC code shown on tax invoices (default `998314`, IT design & development services — confirm with your CA). |
+| `invoice.gstRate`, `invoice.dueDays`, `invoice.prefix`, `invoice.notes` | GST % (default 18), payment terms in days (15), invoice number prefix (`QR-INV`), extra lines under Notes & Terms. |
+
+Branding images live in [`templates/assets/`](templates/assets/):
+`brand-logo.png` (QuickRyz wordmark, used in every document header) and
+`logo.png` (the Q mark). Replace them with same-named files to rebrand.
 
 ---
 
-## 3. Generate your first document (5 minutes)
+## 3. Quickest way: the Quick-Generation scripts
+
+[`Quick-Generation/`](Quick-Generation/) has one ready-to-run script per
+document. Open the script, change the values at the top, and run it — no JSON
+needed:
+
+```bash
+./Quick-Generation/generate-invoice.sh
+```
+
+| Script | Produces |
+|---|---|
+| `generate-invoice.sh` | Client invoice (auto-numbered, GST on/off) |
+| `generate-offer-letter.sh` | Offer Letter |
+| `generate-appointment-letter.sh` | Appointment Letter |
+| `generate-joining-letter.sh` | Joining Letter |
+| `generate-welcome-kit.sh` | Welcome Kit |
+| `generate-onboarding-kit.sh` | Offer + Appointment + Joining + Welcome Kit in one go |
+| `generate-hike-letter.sh` | Hike / Increment Letter |
+| `generate-salary-structure.sh` | Salary Structure |
+| `generate-payslip.sh` | Payslip (defaults to the current month) |
+| `generate-experience-letter.sh` | Experience Certificate |
+| `generate-internship-certificate.sh` | Internship Certificate |
+| `generate-course-certificate.sh` | Course Completion Certificate |
+| `generate-appreciation-certificate.sh` | Appreciation Certificate |
+
+How the values work:
+- Each variable is the JSON field in `UPPER_SNAKE` form (`CANDIDATE_NAME` →
+  `candidateName`, `STRUCTURE_BASIC_PERCENT` → `structure.basicPercent`).
+- Leave an optional value as `""` to skip it. If a required one is blank the
+  script stops and names it: `Please set these variables in the script: PAN`.
+- Lists are written one entry per line inside `( ... )`; rows with several
+  columns use `|` between them, e.g. `"LTA | 5000"`.
+- Dates default to today where that makes sense (`LETTER_DATE="$(date +%F)"`).
+
+Copy a script (e.g. `generate-invoice-acme.sh`) to keep one per client or
+employee.
+
+### Invoices
+
+At the top of `generate-invoice.sh`:
+
+```bash
+CLIENT_NAME="ABC Technologies Private Limited"   # leave "" to be asked
+CLIENT_ADDRESS="123 Business Park, Bengaluru, Karnataka – 560001"
+GST=false                  # true -> GST calculated and added automatically
+CLIENT_STATE="Karnataka"   # place of supply, decides the GST split
+```
+
+- **`GST=false`** (default): total = subtotal, no tax lines.
+- **`GST=true`**: the invoice becomes a **TAX INVOICE** with a SAC column and
+  place of supply. If `CLIENT_STATE` matches `gstState` in the config it adds
+  CGST 9% + SGST 9%, otherwise IGST 18%. It refuses to run while `gstin` is
+  blank in the config, so an invalid tax invoice is never issued.
+- **Numbering** is automatic and always read from the PDFs in
+  `output/invoice/`: the next number is the highest one there + 1
+  (`QR-INV-2026-001`, `-002`, … restarting each year). Generated one wrongly?
+  Delete that PDF and run the script again — it gets the same number back.
+  (Deleting an older invoice leaves a gap; to regenerate it, set
+  `INVOICE_NUMBER` to its number.) Setting `INVOICE_NUMBER` to a number that
+  already has a PDF is refused, so a number is never issued twice.
+- **Dates**: invoice date = today, due date = today + `dueDays` (override with
+  `INVOICE_DATE` / `DUE_DATE`).
+- Output: `output/invoice/Invoice_QR-INV-2026-001_ABC-Technologies-Private-Limited.pdf`
+
+The same invoice can be made from JSON with
+`hrgen invoice data/samples/invoice.sample.json`.
+
+---
+
+## 4. Generate from a JSON file
 
 Every document type has a ready-made example in [`data/samples/`](data/samples/).
 The fastest way to learn the tool is to copy one, edit a few fields, and run it.
@@ -107,7 +176,7 @@ Open that PDF — it's ready to email or print.
 
 ---
 
-## 4. Everyday commands
+## 5. Everyday commands
 
 ### See every document type
 
@@ -154,7 +223,7 @@ hrgen generate payslip data/salary-structure/EMP001_Rahul-Sharma.json --month 20
 
 ---
 
-## 5. Where things live
+## 6. Where things live
 
 ```
 data/
@@ -174,7 +243,7 @@ Naming convention (handled automatically):
 
 ---
 
-## 6. What goes in each JSON
+## 7. What goes in each JSON
 
 Every sample in `data/samples/` is a working example — copy it and change
 only what's different for that person. A few fields to know about:
@@ -195,9 +264,11 @@ Invalid:
 candidateName is required for offer-letter
 ```
 
+For all money values in scripts, commas are fine (`"12,00,000"`).
+
 ---
 
-## 7. Adding a new document type later
+## 8. Adding a new document type later
 
 This tool is designed so new document types don't need new code:
 
@@ -205,6 +276,8 @@ This tool is designed so new document types don't need new code:
 2. Add one JSON Schema file to `schemas/`.
 3. Register it in `src/registry.js` (one small entry).
 4. Add a sample to `data/samples/`.
+5. Add a `Quick-Generation/generate-<type>.sh` — copy any existing script;
+   its variables come straight from the schema's field names.
 
 See [`plan.md`](plan.md) for the full design if you're extending this.
 

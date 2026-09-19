@@ -2,3 +2,7 @@ node_modules/
 output/
 data/*/
 !data/samples/
+# Signature and company seal stay local only: never commit forgeable images
+templates/assets/signature.png
+templates/assets/seal.png
+resources/Authorised-Signatory/

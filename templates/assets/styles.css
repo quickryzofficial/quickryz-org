@@ -59,6 +59,12 @@ body {
   color: var(--muted);
 }
 
+.letterhead .brand-logo {
+  height: 56px;
+  width: auto;
+  display: block;
+}
+
 .letterhead .contact {
   text-align: right;
   font-size: 10.5px;
@@ -271,6 +277,12 @@ table.calendar-strip td {
   border-radius: 9px;
 }
 
+.certificate .brand-row .brand-logo {
+  height: 52px;
+  width: auto;
+  border-radius: 0;
+}
+
 .certificate .brand-row .company-name {
   font-size: 16px;
   font-weight: 700;
@@ -331,4 +343,45 @@ table.calendar-strip td {
 .certificate .cert-id {
   font-size: 9.5px;
   color: var(--muted);
+}
+
+/* ---------- Signature + company seal (letters & certificates) ---------- */
+
+.sig .sig-mark {
+  position: relative;
+  height: 60px;
+}
+
+.sig .sig-mark + .sig-line {
+  margin-top: 0;
+}
+
+.sig-mark .sign {
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  height: 54px;
+}
+
+.sig-mark .seal {
+  position: absolute;
+  left: 118px;
+  bottom: -34px;
+  height: 86px;
+  opacity: 0.85;
+  transform: rotate(-10deg);
+}
+
+.certificate .sig-mark .sign {
+  left: 50%;
+  transform: translateX(-50%);
+  height: 46px;
+}
+
+.certificate .sig-mark .seal {
+  left: auto;
+  right: 100%;
+  margin-right: -14px;
+  bottom: -28px;
+  height: 76px;
 }

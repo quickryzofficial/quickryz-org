@@ -1,15 +1,42 @@
 {
-  "companyName": "Fresh2Tech",
-  "tagline": "Where Freshers Become Professionals.",
-  "address": "Remote-first, serving students and business digitalisation across India",
-  "website": "www.fresh2tech.com",
-  "hrEmail": "hello@fresh2tech.com",
-  "cin": "",
+  "companyName": "QuickRyz Technologies Private Limited",
+  "tagline": "Rise People. Transform Business.",
+  "address": "Marhowrah, Chapra, Saran – 841418, Bihar",
+  "registeredOffice": "Marhowrah, Chapra, Saran – 841418, Bihar",
+  "corporateOffice": "#B6, VVS Building, Siddapura, Bangalore – 560066",
+  "website": "www.quickryz.in",
+  "hrEmail": "info@quickryz.in",
+  "email": "info@quickryz.in",
+  "mobile": "+91 8210680421",
+  "cin": "U62099BR2026PTC087906",
+  "gstin": "",
+  "gstState": "",
   "logo": "templates/assets/logo.png",
+  "brandLogo": "templates/assets/brand-logo.png",
   "brandColor": "#2563EB",
+  "sealImage": "templates/assets/seal.png",
   "signatory": {
     "name": "Pankaj Gupta",
-    "title": "Founder, Fresh2Tech",
+    "title": "Authorized Signatory",
     "signatureImage": "templates/assets/signature.png"
+  },
+  "bank": {
+    "bankName": "",
+    "accountName": "QuickRyz Technologies Private Limited",
+    "accountNumber": "",
+    "ifsc": "",
+    "branch": "",
+    "upi": ""
+  },
+  "invoice": {
+    "prefix": "QR-INV",
+    "gstRate": 18,
+    "sacCode": "998314",
+    "dueDays": 15,
+    "notes": [
+      "Please mention the invoice number while making payment.",
+      "Payment by bank transfer / UPI to the account above only.",
+      "Interest may be charged on payments received after the due date."
+    ]
   }
 }
