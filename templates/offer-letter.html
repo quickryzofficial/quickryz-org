@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>{{{styles}}}</style>
+</head>
+<body>
+<div class="page">
+  <div class="letterhead">
+    <div class="brand">
+      <img src="{{company.logoAbsolute}}" alt="logo" />
+      <div>
+        <div class="company-name">{{company.companyName}}</div>
+        <div class="tagline">{{company.tagline}}</div>
+      </div>
+    </div>
+    <div class="contact">
+      {{company.website}}<br />
+      {{company.hrEmail}}
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <span>Ref: {{employeeId}}</span>
+    <span>Date: {{formatDate letterDate}}</span>
+  </div>
+
+  <div class="doc-title">Offer of Employment</div>
+
+  <div class="body-text">
+    <p>Dear {{candidateName}},</p>
+    <p>
+      We are delighted to offer you the position of <strong>{{designation}}</strong>
+      in the <strong>{{department}}</strong> department at {{company.companyName}}. We were
+      impressed by your background and are confident you will be a valuable
+      addition to our team.
+    </p>
+    <p>
+      Please find the key terms of this offer below. This offer is subject to
+      the terms and conditions communicated to you separately and to
+      satisfactory verification of the information provided by you during the
+      hiring process.
+    </p>
+  </div>
+
+  <table class="details">
+    <tr><td class="label">Designation</td><td>{{designation}}</td></tr>
+    <tr><td class="label">Department</td><td>{{department}}</td></tr>
+    <tr><td class="label">Work Location</td><td>{{workLocation}}</td></tr>
+    <tr><td class="label">Date of Joining</td><td>{{formatDate dateOfJoining}}</td></tr>
+    <tr><td class="label">Annual CTC</td><td>{{formatCurrency annualCtc}} ({{amountInWords annualCtc}})</td></tr>
+    <tr><td class="label">Offer Valid Till</td><td>{{formatDate offerValidTill}}</td></tr>
+  </table>
+
+  <div class="body-text">
+    <p>
+      To accept this offer, please confirm your acceptance in writing on or
+      before the validity date above. We look forward to welcoming you to
+      {{company.companyName}}.
+    </p>
+  </div>
+
+  <div class="signature-block">
+    <div class="sig">
+      {{#if company.signatory.signatureAbsolute}}
+      <img src="{{company.signatory.signatureAbsolute}}" alt="signature" style="height:40px;" />
+      {{/if}}
+      <div class="sig-line">
+        <div class="sig-name">{{company.signatory.name}}</div>
+        <div class="sig-title">{{company.signatory.title}}</div>
+      </div>
+    </div>
+    <div class="sig">
+      <div class="sig-line">
+        <div class="sig-name">{{candidateName}}</div>
+        <div class="sig-title">Candidate Signature &amp; Date</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    {{company.companyName}} &middot; {{company.website}} &middot; {{company.hrEmail}}
+  </div>
+</div>
+</body>
+</html>

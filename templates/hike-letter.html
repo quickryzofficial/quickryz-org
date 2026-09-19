@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>{{{styles}}}</style>
+</head>
+<body>
+<div class="page">
+  <div class="letterhead">
+    <div class="brand">
+      <img src="{{company.logoAbsolute}}" alt="logo" />
+      <div>
+        <div class="company-name">{{company.companyName}}</div>
+        <div class="tagline">{{company.tagline}}</div>
+      </div>
+    </div>
+    <div class="contact">
+      {{company.website}}<br />
+      {{company.hrEmail}}
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <span>Ref: {{employeeId}}</span>
+    <span>Date: {{formatDate letterDate}}</span>
+  </div>
+
+  <div class="doc-title">Compensation Revision Letter</div>
+
+  <div class="body-text">
+    <p>Dear {{employeeName}},</p>
+    <p>
+      Congratulations! In recognition of your contribution and performance, we
+      are pleased to inform you of a revision to your compensation and
+      designation, effective <strong>{{formatDate effectiveFrom}}</strong>.
+    </p>
+  </div>
+
+  <table class="salary">
+    <tr>
+      <th></th>
+      <th>Current</th>
+      <th>Revised</th>
+    </tr>
+    <tr>
+      <td>Designation</td>
+      <td>{{designation}}</td>
+      <td>{{newDesignation}}</td>
+    </tr>
+    <tr>
+      <td>Annual CTC</td>
+      <td class="amount">{{formatCurrency currentCtc}}</td>
+      <td class="amount">{{formatCurrency revisedCtc}}</td>
+    </tr>
+  </table>
+
+  <div class="body-text">
+    <p>
+      Your revised annual CTC of {{formatCurrency revisedCtc}}
+      ({{amountInWords revisedCtc}}) will reflect starting the pay cycle for
+      {{formatMonthYear effectiveFrom}}. All other terms of your employment
+      remain unchanged.
+    </p>
+    <p>Thank you for your continued dedication — we look forward to your growth with us.</p>
+  </div>
+
+  <div class="signature-block">
+    <div class="sig">
+      {{#if company.signatory.signatureAbsolute}}
+      <img src="{{company.signatory.signatureAbsolute}}" alt="signature" style="height:40px;" />
+      {{/if}}
+      <div class="sig-line">
+        <div class="sig-name">{{company.signatory.name}}</div>
+        <div class="sig-title">{{company.signatory.title}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    {{company.companyName}} &middot; {{company.website}} &middot; {{company.hrEmail}}
+  </div>
+</div>
+</body>
+</html>

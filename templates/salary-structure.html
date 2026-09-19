@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>{{{styles}}}</style>
+</head>
+<body>
+<div class="page">
+  <div class="letterhead">
+    <div class="brand">
+      <img src="{{company.logoAbsolute}}" alt="logo" />
+      <div>
+        <div class="company-name">{{company.companyName}}</div>
+        <div class="tagline">{{company.tagline}}</div>
+      </div>
+    </div>
+    <div class="contact">
+      {{company.website}}<br />
+      {{company.hrEmail}}
+    </div>
+  </div>
+
+  <div class="doc-title">Salary Structure (CTC Breakup)</div>
+
+  <table class="details">
+    <tr><td class="label">Employee Name</td><td>{{employeeName}}</td></tr>
+    <tr><td class="label">Employee ID</td><td>{{employeeId}}</td></tr>
+    <tr><td class="label">Designation</td><td>{{designation}}</td></tr>
+    <tr><td class="label">Department</td><td>{{department}}</td></tr>
+    <tr><td class="label">Date of Joining</td><td>{{formatDate dateOfJoining}}</td></tr>
+    <tr><td class="label">PAN</td><td>{{pan}}</td></tr>
+    <tr><td class="label">Annual CTC</td><td>{{formatCurrency annualCtc}} ({{amountInWords annualCtc}})</td></tr>
+  </table>
+
+  <table class="salary">
+    <tr><th>Component</th><th style="text-align:right">Monthly</th><th style="text-align:right">Annual</th></tr>
+    <tr><td>Basic</td><td class="amount">{{formatCurrency salary.basicMonthly}}</td><td class="amount">{{formatCurrency salary.basicAnnual}}</td></tr>
+    <tr><td>House Rent Allowance (HRA)</td><td class="amount">{{formatCurrency salary.hraMonthly}}</td><td class="amount">{{formatCurrency salary.hraAnnual}}</td></tr>
+    <tr><td>Special Allowance</td><td class="amount">{{formatCurrency salary.specialAllowanceMonthly}}</td><td class="amount">{{formatCurrency salary.specialAllowanceAnnual}}</td></tr>
+    <tr class="total"><td>Gross Earnings</td><td class="amount">{{formatCurrency salary.structuralGrossMonthly}}</td><td class="amount">{{formatCurrency salary.grossAnnual}}</td></tr>
+  </table>
+
+  <table class="salary">
+    <tr><th>Deduction</th><th style="text-align:right">Monthly</th></tr>
+    <tr><td>Provident Fund (Employee)</td><td class="amount">{{formatCurrency salary.pfMonthly}}</td></tr>
+    <tr><td>Professional Tax</td><td class="amount">{{formatCurrency salary.professionalTax}}</td></tr>
+    <tr><td>TDS</td><td class="amount">{{formatCurrency salary.tdsMonthly}}</td></tr>
+    <tr class="total"><td>Total Deductions</td><td class="amount">{{formatCurrency salary.structuralDeductionsMonthly}}</td></tr>
+  </table>
+
+  <div class="net-pay-banner">
+    <span class="label">Net Monthly Pay</span>
+    <span class="amount">{{formatCurrency salary.structuralNetPay}}</span>
+  </div>
+  <div class="amount-words">{{salary.structuralNetPayWords}} per month</div>
+
+  <div class="footer-note">
+    This is a system-generated salary structure and does not require a signature. {{company.companyName}} &middot; {{company.hrEmail}}
+  </div>
+</div>
+</body>
+</html>

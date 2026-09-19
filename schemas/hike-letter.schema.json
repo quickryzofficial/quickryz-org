@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "employeeId",
+    "employeeName",
+    "designation",
+    "newDesignation",
+    "currentCtc",
+    "revisedCtc",
+    "effectiveFrom",
+    "letterDate"
+  ],
+  "properties": {
+    "employeeId": { "type": "string", "minLength": 1 },
+    "employeeName": { "type": "string", "minLength": 1 },
+    "designation": { "type": "string", "minLength": 1 },
+    "newDesignation": { "type": "string", "minLength": 1 },
+    "currentCtc": { "type": "number", "exclusiveMinimum": 0 },
+    "revisedCtc": { "type": "number", "exclusiveMinimum": 0 },
+    "effectiveFrom": { "type": "string", "format": "date" },
+    "letterDate": { "type": "string", "format": "date" }
+  }
+}

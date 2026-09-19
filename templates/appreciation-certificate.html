@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>{{{styles}}}</style>
+</head>
+<body>
+<div class="page">
+  <div class="certificate">
+    <div class="brand-row">
+      <img src="{{company.logoAbsolute}}" alt="logo" />
+      <div class="company-name">{{company.companyName}}</div>
+    </div>
+
+    <div class="cert-heading">Certificate of Appreciation</div>
+    <div class="cert-subheading">Above &amp; Beyond Award</div>
+
+    <div class="recipient-name">{{recipientName}}</div>
+
+    <div class="cert-body">
+      {{#if title}}<strong>{{title}}</strong><br />{{/if}}
+      in recognition of {{reason}}.
+    </div>
+
+    <div class="cert-footer">
+      <div class="sig">
+        <div class="sig-line">
+          {{formatDate awardDate}}<br />Date Issued
+        </div>
+      </div>
+      <div class="cert-id">Certificate ID: {{certificateId}}</div>
+      <div class="sig">
+        {{#if company.signatory.signatureAbsolute}}
+        <img src="{{company.signatory.signatureAbsolute}}" alt="signature" style="height:36px;" /><br />
+        {{/if}}
+        <div class="sig-line">
+          {{company.signatory.name}}<br />{{company.signatory.title}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

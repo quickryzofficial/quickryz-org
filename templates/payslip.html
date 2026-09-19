@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>{{{styles}}}</style>
+</head>
+<body>
+<div class="page">
+  <div class="letterhead">
+    <div class="brand">
+      <img src="{{company.logoAbsolute}}" alt="logo" />
+      <div>
+        <div class="company-name">{{company.companyName}}</div>
+        <div class="tagline">{{company.tagline}}</div>
+      </div>
+    </div>
+    <div class="contact">
+      {{company.website}}<br />
+      {{company.hrEmail}}
+    </div>
+  </div>
+
+  <div class="doc-title">Payslip for {{formatMonthYear payslipMonth}}</div>
+
+  <div class="payslip-columns">
+    <div>
+      <table class="details">
+        <tr><td class="label">Employee ID</td><td>{{employeeId}}</td></tr>
+        <tr><td class="label">Employee Name</td><td>{{employeeName}}</td></tr>
+        {{#if dob}}<tr><td class="label">Date of Birth</td><td>{{formatDate dob}}</td></tr>{{/if}}
+        {{#if workLocation}}<tr><td class="label">Location</td><td>{{workLocation}}</td></tr>{{/if}}
+        <tr><td class="label">Department</td><td>{{department}}</td></tr>
+        {{#if grade}}<tr><td class="label">Grade</td><td>{{grade}}</td></tr>{{/if}}
+        <tr><td class="label">Designation</td><td>{{designation}}</td></tr>
+      </table>
+    </div>
+    <div>
+      <table class="details">
+        <tr><td class="label">Bank Account</td><td>{{bankAccount}}</td></tr>
+        {{#if ifscCode}}<tr><td class="label">IFSC Code</td><td>{{ifscCode}}</td></tr>{{/if}}
+        <tr><td class="label">Date of Joining</td><td>{{formatDate dateOfJoining}}</td></tr>
+        <tr><td class="label">PAN</td><td>{{pan}}</td></tr>
+        <tr><td class="label">UAN</td><td>{{uan}}</td></tr>
+        <tr><td class="label">Days Worked</td><td>{{salary.payableDays}}</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="payslip-columns">
+    <div>
+      <table class="salary">
+        <tr><th colspan="2">Earnings</th></tr>
+        {{#each salary.earningsRows}}
+        <tr><td>{{this.label}}</td><td class="amount">{{formatCurrency this.monthly}}</td></tr>
+        {{/each}}
+        <tr class="total"><td>Gross Earnings</td><td class="amount">{{formatCurrency salary.grossMonthly}}</td></tr>
+      </table>
+    </div>
+    <div>
+      <table class="salary">
+        <tr><th colspan="2">Deductions</th></tr>
+        {{#each salary.deductionsRows}}
+        <tr><td>{{this.label}}</td><td class="amount">{{formatCurrency this.monthly}}</td></tr>
+        {{/each}}
+        <tr class="total"><td>Total Deductions</td><td class="amount">{{formatCurrency salary.totalDeductions}}</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="net-pay-banner">
+    <span class="label">Net Pay</span>
+    <span class="amount">{{formatCurrency salary.netPay}}</span>
+  </div>
+  <div class="amount-words">{{salary.netPayWords}}</div>
+
+  <table class="calendar-strip">
+    <tr>
+      <th>Calendar Days</th>
+      <th>Loss of Pay</th>
+      <th>LOP Reversal</th>
+      <th>Arrear Days</th>
+      <th>Days Payable</th>
+    </tr>
+    <tr>
+      <td>{{salary.calendarDays}}</td>
+      <td>{{salary.lopDays}}</td>
+      <td>{{salary.lopReversalDays}}</td>
+      <td>{{salary.arrearDays}}</td>
+      <td>{{salary.payableDays}}</td>
+    </tr>
+  </table>
+
+  <div class="footer-note">
+    This is a system-generated payslip and does not require a signature. {{company.companyName}} &middot; {{company.hrEmail}}
+  </div>
+</div>
+</body>
+</html>

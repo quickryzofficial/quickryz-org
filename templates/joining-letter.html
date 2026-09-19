@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>{{{styles}}}</style>
+</head>
+<body>
+<div class="page">
+  <div class="letterhead">
+    <div class="brand">
+      <img src="{{company.logoAbsolute}}" alt="logo" />
+      <div>
+        <div class="company-name">{{company.companyName}}</div>
+        <div class="tagline">{{company.tagline}}</div>
+      </div>
+    </div>
+    <div class="contact">
+      {{company.website}}<br />
+      {{company.hrEmail}}
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <span>Ref: {{employeeId}}</span>
+    <span>Date: {{formatDate letterDate}}</span>
+  </div>
+
+  <div class="doc-title">Joining Confirmation</div>
+
+  <div class="body-text">
+    <p>Dear {{employeeName}},</p>
+    <p>
+      This is to confirm that you have joined {{company.companyName}} as
+      <strong>{{designation}}</strong> in the <strong>{{department}}</strong>
+      department, effective <strong>{{formatDate dateOfJoining}}</strong>.
+    </p>
+  </div>
+
+  <table class="details">
+    <tr><td class="label">Employee Name</td><td>{{employeeName}}</td></tr>
+    <tr><td class="label">Employee ID</td><td>{{employeeId}}</td></tr>
+    <tr><td class="label">Designation</td><td>{{designation}}</td></tr>
+    <tr><td class="label">Department</td><td>{{department}}</td></tr>
+    <tr><td class="label">Work Location</td><td>{{workLocation}}</td></tr>
+    <tr><td class="label">Date of Joining</td><td>{{formatDate dateOfJoining}}</td></tr>
+    <tr><td class="label">Reporting Manager</td><td>{{reportingManager}}</td></tr>
+  </table>
+
+  <div class="body-text">
+    <p>
+      We are glad to have you on board and look forward to a mutually
+      rewarding association. Welcome to the team!
+    </p>
+  </div>
+
+  <div class="signature-block">
+    <div class="sig">
+      {{#if company.signatory.signatureAbsolute}}
+      <img src="{{company.signatory.signatureAbsolute}}" alt="signature" style="height:40px;" />
+      {{/if}}
+      <div class="sig-line">
+        <div class="sig-name">{{company.signatory.name}}</div>
+        <div class="sig-title">{{company.signatory.title}}</div>
+      </div>
+    </div>
+    <div class="sig">
+      <div class="sig-line">
+        <div class="sig-name">{{employeeName}}</div>
+        <div class="sig-title">Employee Signature &amp; Date</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    {{company.companyName}} &middot; {{company.website}} &middot; {{company.hrEmail}}
+  </div>
+</div>
+</body>
+</html>

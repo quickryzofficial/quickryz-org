@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "employeeId",
+    "employeeName",
+    "designation",
+    "department",
+    "dateOfJoining",
+    "workLocation",
+    "reportingManager",
+    "buddyName",
+    "letterDate"
+  ],
+  "properties": {
+    "employeeId": { "type": "string", "minLength": 1 },
+    "employeeName": { "type": "string", "minLength": 1 },
+    "designation": { "type": "string", "minLength": 1 },
+    "department": { "type": "string", "minLength": 1 },
+    "dateOfJoining": { "type": "string", "format": "date" },
+    "workLocation": { "type": "string", "minLength": 1 },
+    "reportingManager": { "type": "string", "minLength": 1 },
+    "buddyName": { "type": "string", "minLength": 1 },
+    "itAssets": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "letterDate": { "type": "string", "format": "date" }
+  }
+}

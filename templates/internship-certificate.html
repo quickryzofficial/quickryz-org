@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>{{{styles}}}</style>
+</head>
+<body>
+<div class="page">
+  <div class="certificate">
+    <div class="brand-row">
+      <img src="{{company.logoAbsolute}}" alt="logo" />
+      <div class="company-name">{{company.companyName}}</div>
+    </div>
+
+    <div class="cert-heading">Certificate of Internship</div>
+    <div class="cert-subheading">This certificate is proudly presented to</div>
+
+    <div class="recipient-name">{{employeeName}}</div>
+
+    <div class="cert-body">
+      for successfully completing an internship as <strong>{{designation}}</strong>
+      at {{company.companyName}}, from {{formatDate startDate}} to
+      {{formatDate endDate}}. Their work was {{conductRemark}}.
+    </div>
+
+    <div class="cert-footer">
+      <div class="sig">
+        <div class="sig-line">
+          {{formatDate letterDate}}<br />Date Issued
+        </div>
+      </div>
+      <div class="cert-id">Certificate ID: {{certificateId}}</div>
+      <div class="sig">
+        {{#if company.signatory.signatureAbsolute}}
+        <img src="{{company.signatory.signatureAbsolute}}" alt="signature" style="height:36px;" /><br />
+        {{/if}}
+        <div class="sig-line">
+          {{company.signatory.name}}<br />{{company.signatory.title}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

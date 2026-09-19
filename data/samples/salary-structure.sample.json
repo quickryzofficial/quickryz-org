@@ -1,0 +1,34 @@
+{
+  "employeeId": "EMP001",
+  "employeeName": "Rahul Sharma",
+  "designation": "Software Engineer",
+  "department": "Engineering",
+  "grade": "L2",
+  "workLocation": "Remote",
+  "dob": "1998-04-12",
+  "pan": "ABCDE1234F",
+  "bankAccount": "XXXX-XXXX-1234",
+  "ifscCode": "ICIC0001234",
+  "uan": "100900800700",
+  "dateOfJoining": "2026-08-11",
+  "annualCtc": 1200000,
+  "structure": {
+    "basicPercent": 40,
+    "hraPercentOfBasic": 50,
+    "specialAllowance": "auto",
+    "pfEmployeePercent": 12,
+    "professionalTax": 200,
+    "tdsMonthly": 5000
+  },
+  "extraEarnings": [
+    { "label": "LTA", "amount": 5000 },
+    { "label": "Gadget Allowance", "amount": 2000 }
+  ],
+  "extraDeductions": [
+    { "label": "Mediclaim Add-on", "amount": 1200 }
+  ],
+  "payableDays": 30,
+  "lopDays": 0,
+  "arrearDays": 0,
+  "lopReversalDays": 0
+}

@@ -1,0 +1,13 @@
+{
+  "employeeId": "EMP001",
+  "candidateName": "Rahul Sharma",
+  "designation": "Software Engineer",
+  "department": "Engineering",
+  "dateOfJoining": "2026-08-11",
+  "workLocation": "Remote",
+  "annualCtc": 1200000,
+  "probationMonths": 6,
+  "noticePeriodDays": 60,
+  "reportingManager": "Anita Desai",
+  "letterDate": "2026-07-27"
+}

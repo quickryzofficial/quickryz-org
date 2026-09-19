@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "employeeId",
+    "employeeName",
+    "designation",
+    "department",
+    "pan",
+    "bankAccount",
+    "uan",
+    "dateOfJoining",
+    "annualCtc",
+    "structure",
+    "payableDays"
+  ],
+  "properties": {
+    "employeeId": { "type": "string", "minLength": 1 },
+    "employeeName": { "type": "string", "minLength": 1 },
+    "designation": { "type": "string", "minLength": 1 },
+    "department": { "type": "string", "minLength": 1 },
+    "pan": { "type": "string", "minLength": 1 },
+    "bankAccount": { "type": "string", "minLength": 1 },
+    "uan": { "type": "string", "minLength": 1 },
+    "dateOfJoining": { "type": "string", "format": "date" },
+    "annualCtc": { "type": "number", "exclusiveMinimum": 0 },
+    "structure": {
+      "type": "object",
+      "required": [
+        "basicPercent",
+        "hraPercentOfBasic",
+        "specialAllowance",
+        "pfEmployeePercent",
+        "professionalTax",
+        "tdsMonthly"
+      ],
+      "properties": {
+        "basicPercent": { "type": "number", "exclusiveMinimum": 0, "maximum": 100 },
+        "hraPercentOfBasic": { "type": "number", "minimum": 0, "maximum": 100 },
+        "specialAllowance": {
+          "oneOf": [
+            { "type": "number", "minimum": 0 },
+            { "const": "auto" }
+          ]
+        },
+        "pfEmployeePercent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "professionalTax": { "type": "number", "minimum": 0 },
+        "tdsMonthly": { "type": "number", "minimum": 0 }
+      }
+    },
+    "payableDays": { "type": "number", "minimum": 0, "maximum": 31 },
+    "lopDays": { "type": "number", "minimum": 0, "maximum": 31, "default": 0 },
+    "grade": { "type": "string" },
+    "workLocation": { "type": "string" },
+    "dob": { "type": "string", "format": "date" },
+    "ifscCode": { "type": "string" },
+    "calendarDays": { "type": "number", "minimum": 0, "maximum": 31 },
+    "arrearDays": { "type": "number", "minimum": 0, "default": 0 },
+    "lopReversalDays": { "type": "number", "minimum": 0, "default": 0 },
+    "extraEarnings": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "required": ["label", "amount"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "amount": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "extraDeductions": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "required": ["label", "amount"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "amount": { "type": "number", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

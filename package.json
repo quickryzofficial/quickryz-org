@@ -1,0 +1,20 @@
+{
+  "name": "hrgen",
+  "version": "1.0.0",
+  "description": "Fully offline HR document generator - JSON in, PDF out. No LLM, no network calls at runtime.",
+  "private": true,
+  "type": "commonjs",
+  "bin": {
+    "hrgen": "./bin/hrgen.js"
+  },
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "commander": "^12.1.0",
+    "handlebars": "^4.7.8",
+    "puppeteer": "^23.9.0"
+  }
+}

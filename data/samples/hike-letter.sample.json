@@ -1,0 +1,10 @@
+{
+  "employeeId": "EMP001",
+  "employeeName": "Rahul Sharma",
+  "designation": "Software Engineer",
+  "newDesignation": "Senior Software Engineer",
+  "currentCtc": 1200000,
+  "revisedCtc": 1500000,
+  "effectiveFrom": "2026-08-01",
+  "letterDate": "2026-07-27"
+}

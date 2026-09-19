@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "employeeId",
+    "employeeName",
+    "designation",
+    "startDate",
+    "endDate",
+    "conductRemark",
+    "letterDate"
+  ],
+  "properties": {
+    "employeeId": { "type": "string", "minLength": 1 },
+    "employeeName": { "type": "string", "minLength": 1 },
+    "designation": { "type": "string", "minLength": 1 },
+    "startDate": { "type": "string", "format": "date" },
+    "endDate": { "type": "string", "format": "date" },
+    "conductRemark": { "type": "string", "minLength": 1 },
+    "letterDate": { "type": "string", "format": "date" }
+  }
+}

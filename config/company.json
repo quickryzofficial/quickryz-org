@@ -1,0 +1,15 @@
+{
+  "companyName": "Fresh2Tech",
+  "tagline": "Where Freshers Become Professionals.",
+  "address": "Remote-first, serving students and business digitalisation across India",
+  "website": "www.fresh2tech.com",
+  "hrEmail": "hello@fresh2tech.com",
+  "cin": "",
+  "logo": "templates/assets/logo.png",
+  "brandColor": "#2563EB",
+  "signatory": {
+    "name": "Pankaj Gupta",
+    "title": "Founder, Fresh2Tech",
+    "signatureImage": "templates/assets/signature.png"
+  }
+}
