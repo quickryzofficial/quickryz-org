@@ -140,7 +140,7 @@ async function generate(typeId, data, options = {}) {
 }
 
 // Generates an invoice PDF: fills in number/dates, computes totals and GST,
-// renders, and only then advances the invoice counter.
+// renders, and writes the PDF to output/invoice/.
 async function generateInvoice(data) {
   validateData("invoice", data);
   const company = loadCompanyConfig();
@@ -150,16 +150,21 @@ async function generateInvoice(data) {
   const dueDate = data.dueDate || invoice.addDays(invoiceDate, dueDays);
 
   const outDir = path.join(ROOT, "output", "invoice");
-  const counterPath = path.join(ROOT, "data", "invoice-counter.json");
-  const issued = data.invoiceNumber
-    ? null
-    : invoice.nextInvoiceNumber({
-        counterPath,
-        outputDir: outDir,
-        prefix: settings.prefix || "INV",
-        year: Number(invoiceDate.slice(0, 4)),
-      });
-  const invoiceNumber = data.invoiceNumber || issued.invoiceNumber;
+  const invoiceNumber =
+    data.invoiceNumber ||
+    invoice.nextInvoiceNumber({
+      outputDir: outDir,
+      prefix: settings.prefix || "INV",
+      year: Number(invoiceDate.slice(0, 4)),
+    });
+  // A manual number must not duplicate an issued invoice (auto numbers can't).
+  const existing = invoice.findInvoiceFile(outDir, invoiceNumber);
+  if (existing) {
+    throw new Error(
+      `Invoice ${invoiceNumber} already exists: ${existing}\n` +
+        "Delete that PDF first if you are regenerating it, or clear INVOICE_NUMBER to use the next number."
+    );
+  }
 
   const totals = invoice.computeInvoice(data, company);
   const html = renderHtml("invoice", {
@@ -181,7 +186,6 @@ async function generateInvoice(data) {
     `Invoice_${invoiceNumber}_${slugifyName(data.client.name)}.pdf`
   );
   await htmlToPdf(html, outputPath);
-  if (issued) invoice.saveInvoiceCounter(counterPath, issued);
 
   const bank = company.bank || {};
   const warnings = [];

@@ -8,7 +8,7 @@ const path = require("path");
 const {
   computeInvoice,
   nextInvoiceNumber,
-  saveInvoiceCounter,
+  findInvoiceFile,
   addDays,
 } = require("../src/invoice");
 
@@ -91,30 +91,52 @@ function tmpDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), "invoice-test-"));
 }
 
-test("invoice numbers start at 001 and increment per year", () => {
-  const dir = tmpDir();
-  const counter = path.join(dir, "counter.json");
-  const outDir = path.join(dir, "out");
-  const first = nextInvoiceNumber({ counterPath: counter, outputDir: outDir, prefix: "QR-INV", year: 2026 });
-  assert.equal(first.invoiceNumber, "QR-INV-2026-001");
-  saveInvoiceCounter(counter, first);
-  const second = nextInvoiceNumber({ counterPath: counter, outputDir: outDir, prefix: "QR-INV", year: 2026 });
-  assert.equal(second.invoiceNumber, "QR-INV-2026-002");
-  saveInvoiceCounter(counter, second);
-  const nextYear = nextInvoiceNumber({ counterPath: counter, outputDir: outDir, prefix: "QR-INV", year: 2027 });
-  assert.equal(nextYear.invoiceNumber, "QR-INV-2027-001");
+function outDirWith(...files) {
+  const dir = path.join(tmpDir(), "invoice");
+  fs.mkdirSync(dir);
+  for (const f of files) fs.writeFileSync(path.join(dir, f), "");
+  return dir;
+}
+
+test("first invoice of the year is 001, including when the folder doesn't exist yet", () => {
+  const missing = path.join(tmpDir(), "no-such-dir");
+  assert.equal(nextInvoiceNumber({ outputDir: missing, prefix: "QR-INV", year: 2026 }), "QR-INV-2026-001");
 });
 
-test("a lost counter file never reuses a number already present in output", () => {
-  const dir = tmpDir();
-  const outDir = path.join(dir, "out");
-  fs.mkdirSync(outDir);
-  fs.writeFileSync(path.join(outDir, "Invoice_QR-INV-2026-007_Acme.pdf"), "");
-  const n = nextInvoiceNumber({
-    counterPath: path.join(dir, "missing.json"),
-    outputDir: outDir,
-    prefix: "QR-INV",
-    year: 2026,
-  });
-  assert.equal(n.invoiceNumber, "QR-INV-2026-008");
+test("next number is the highest existing invoice + 1", () => {
+  const dir = outDirWith(
+    "Invoice_QR-INV-2026-001_Acme.pdf",
+    "Invoice_QR-INV-2026-007_Beta-Corp.pdf",
+    "Invoice_QR-INV-2026-003_Acme.pdf"
+  );
+  assert.equal(nextInvoiceNumber({ outputDir: dir, prefix: "QR-INV", year: 2026 }), "QR-INV-2026-008");
+});
+
+test("deleting the latest invoice frees its number for the regenerated one", () => {
+  const dir = outDirWith("Invoice_QR-INV-2026-001_Acme.pdf", "Invoice_QR-INV-2026-002_Wrong.pdf");
+  fs.unlinkSync(path.join(dir, "Invoice_QR-INV-2026-002_Wrong.pdf"));
+  assert.equal(nextInvoiceNumber({ outputDir: dir, prefix: "QR-INV", year: 2026 }), "QR-INV-2026-002");
+});
+
+test("other years, other prefixes and non-PDF files are ignored", () => {
+  const dir = outDirWith(
+    "Invoice_QR-INV-2025-042_Acme.pdf",
+    "Invoice_OLD-INV-2026-099_Acme.pdf",
+    "Invoice_QR-INV-2026-050_Acme.pdf.bak",
+    "Invoice_QR-INV-2026-004_Acme.pdf"
+  );
+  assert.equal(nextInvoiceNumber({ outputDir: dir, prefix: "QR-INV", year: 2026 }), "QR-INV-2026-005");
+  assert.equal(nextInvoiceNumber({ outputDir: dir, prefix: "QR-INV", year: 2027 }), "QR-INV-2027-001");
+});
+
+test("sequence keeps growing past 999", () => {
+  const dir = outDirWith("Invoice_QR-INV-2026-999_Acme.pdf");
+  assert.equal(nextInvoiceNumber({ outputDir: dir, prefix: "QR-INV", year: 2026 }), "QR-INV-2026-1000");
+});
+
+test("findInvoiceFile finds an existing PDF for a number, whatever the client", () => {
+  const dir = outDirWith("Invoice_QR-INV-2026-003_Acme.pdf");
+  assert.equal(findInvoiceFile(dir, "QR-INV-2026-003"), path.join(dir, "Invoice_QR-INV-2026-003_Acme.pdf"));
+  assert.equal(findInvoiceFile(dir, "QR-INV-2026-004"), null);
+  assert.equal(findInvoiceFile(path.join(dir, "missing"), "QR-INV-2026-003"), null);
 });

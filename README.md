@@ -135,10 +135,13 @@ CLIENT_STATE="Karnataka"   # place of supply, decides the GST split
   place of supply. If `CLIENT_STATE` matches `gstState` in the config it adds
   CGST 9% + SGST 9%, otherwise IGST 18%. It refuses to run while `gstin` is
   blank in the config, so an invalid tax invoice is never issued.
-- **Numbering** is automatic: `QR-INV-2026-001`, `-002`, … restarting each
-  year. The counter lives in `data/invoice-counter.json` and only advances
-  after a PDF is written; it also checks `output/invoice/` so a deleted
-  counter never reuses a number. Set `INVOICE_NUMBER` to override.
+- **Numbering** is automatic and always read from the PDFs in
+  `output/invoice/`: the next number is the highest one there + 1
+  (`QR-INV-2026-001`, `-002`, … restarting each year). Generated one wrongly?
+  Delete that PDF and run the script again — it gets the same number back.
+  (Deleting an older invoice leaves a gap; to regenerate it, set
+  `INVOICE_NUMBER` to its number.) Setting `INVOICE_NUMBER` to a number that
+  already has a PDF is refused, so a number is never issued twice.
 - **Dates**: invoice date = today, due date = today + `dueDays` (override with
   `INVOICE_DATE` / `DUE_DATE`).
 - Output: `output/invoice/Invoice_QR-INV-2026-001_ABC-Technologies-Private-Limited.pdf`

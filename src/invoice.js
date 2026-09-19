@@ -1,6 +1,7 @@
 "use strict";
 
 const fs = require("fs");
+const path = require("path");
 
 // Money is kept in rupees with 2 decimals (paise). Rounding goes through
 // integer paise so 0.1 + 0.2 style float noise never reaches the PDF.
@@ -87,39 +88,29 @@ function localTodayIso() {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-function readCounter(counterPath) {
-  if (!fs.existsSync(counterPath)) return {};
-  return JSON.parse(fs.readFileSync(counterPath, "utf8"));
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+function invoicePdfs(outputDir) {
+  if (!fs.existsSync(outputDir)) return [];
+  return fs.readdirSync(outputDir).filter((name) => name.endsWith(".pdf"));
 }
 
-// Highest sequence already used for `prefix-year`, judged from existing PDF
-// filenames — a safety net so a deleted counter file never reissues a number.
-function highestIssuedInOutput(outputDir, prefix, year) {
-  if (!fs.existsSync(outputDir)) return 0;
-  const pattern = new RegExp(`${prefix}-${year}-(\\d+)`);
-  return fs.readdirSync(outputDir).reduce((max, name) => {
+// The PDFs in output/invoice/ are the only record of issued numbers: the next
+// one is the highest existing sequence for `prefix-year` + 1. Deleting a
+// wrongly generated latest invoice therefore frees its number again.
+function nextInvoiceNumber({ outputDir, prefix, year }) {
+  const pattern = new RegExp(`^Invoice_${escapeRegExp(prefix)}-${year}-(\\d+)_`);
+  const last = invoicePdfs(outputDir).reduce((max, name) => {
     const match = name.match(pattern);
     return match ? Math.max(max, Number(match[1])) : max;
   }, 0);
+  return `${prefix}-${year}-${String(last + 1).padStart(3, "0")}`;
 }
 
-// Returns the next number without saving it; call saveInvoiceCounter()
-// only once the PDF is written, so a failed run doesn't burn a number.
-function nextInvoiceNumber({ counterPath, outputDir, prefix, year }) {
-  const counter = readCounter(counterPath);
-  const last = Math.max(counter[year] || 0, highestIssuedInOutput(outputDir, prefix, year));
-  const sequence = last + 1;
-  return {
-    year,
-    sequence,
-    invoiceNumber: `${prefix}-${year}-${String(sequence).padStart(3, "0")}`,
-  };
-}
-
-function saveInvoiceCounter(counterPath, { year, sequence }) {
-  const counter = readCounter(counterPath);
-  counter[year] = Math.max(counter[year] || 0, sequence);
-  fs.writeFileSync(counterPath, `${JSON.stringify(counter, null, 2)}\n`);
+// Path of the PDF already issued under `invoiceNumber` (any client), or null.
+function findInvoiceFile(outputDir, invoiceNumber) {
+  const name = invoicePdfs(outputDir).find((f) => f.startsWith(`Invoice_${invoiceNumber}_`));
+  return name ? path.join(outputDir, name) : null;
 }
 
 module.exports = {
@@ -128,5 +119,5 @@ module.exports = {
   addDays,
   localTodayIso,
   nextInvoiceNumber,
-  saveInvoiceCounter,
+  findInvoiceFile,
 };
