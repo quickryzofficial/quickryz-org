@@ -41,6 +41,10 @@ function loadCompanyConfig() {
   if (company.brandLogo) {
     company.brandLogoAbsolute = imageToDataUri(path.join(ROOT, company.brandLogo));
   }
+  if (company.sealImage) {
+    const sealPath = path.join(ROOT, company.sealImage);
+    company.sealAbsolute = fs.existsSync(sealPath) ? imageToDataUri(sealPath) : null;
+  }
   if (company.signatory && company.signatory.signatureImage) {
     const sigPath = path.join(ROOT, company.signatory.signatureImage);
     company.signatory.signatureAbsolute = fs.existsSync(sigPath)

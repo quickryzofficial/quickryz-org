@@ -39,9 +39,10 @@
 
   <div class="signature-block">
     <div class="sig">
-      {{#if company.signatory.signatureAbsolute}}
-      <img src="{{company.signatory.signatureAbsolute}}" alt="signature" style="height:40px;" />
-      {{/if}}
+      <div class="sig-mark">
+        {{#if company.sealAbsolute}}<img class="seal" src="{{company.sealAbsolute}}" alt="company seal" />{{/if}}
+        {{#if company.signatory.signatureAbsolute}}<img class="sign" src="{{company.signatory.signatureAbsolute}}" alt="signature" />{{/if}}
+      </div>
       <div class="sig-line">
         <div class="sig-name">{{company.signatory.name}}</div>
         <div class="sig-title">{{company.signatory.title}}</div>
