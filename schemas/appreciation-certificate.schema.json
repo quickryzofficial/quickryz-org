@@ -1,12 +1,37 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["recipientName", "reason", "awardDate", "certificateId"],
+  "required": [
+    "recipientName",
+    "reason",
+    "awardDate",
+    "certificateId"
+  ],
   "properties": {
-    "recipientName": { "type": "string", "minLength": 1 },
-    "title": { "type": "string" },
-    "reason": { "type": "string", "minLength": 1 },
-    "awardDate": { "type": "string", "format": "date" },
-    "certificateId": { "type": "string", "minLength": 1 }
+    "recipientName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "awardDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "certificateId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trainerName": {
+      "type": "string"
+    },
+    "trainerTitle": {
+      "type": "string"
+    }
   }
 }

@@ -2,44 +2,154 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<style>{{{styles}}}</style>
+<style>
+  /* The QuickRyz internship certificate artwork is the page; only the fields
+     that change per intern are printed on top. Positions are measured from
+     the 1536x1024 artwork, so one --u is one artwork pixel. The artwork's own
+     sample values are hidden under blurred white panels (its centre is white,
+     so they are invisible); its title, labels and icons are left untouched. */
+  @page { size: 297mm 198mm; margin: 0; }
+
+  @font-face { font-family: "CertSans"; font-weight: 400; src: url("{{assets.fonts.poppins400}}") format("truetype"); }
+  @font-face { font-family: "CertSans"; font-weight: 500; src: url("{{assets.fonts.poppins500}}") format("truetype"); }
+  @font-face { font-family: "CertSans"; font-weight: 600; src: url("{{assets.fonts.poppins600}}") format("truetype"); }
+  @font-face { font-family: "CertSans"; font-weight: 700; src: url("{{assets.fonts.poppins700}}") format("truetype"); }
+  @font-face { font-family: "CertScript"; font-weight: 700; src: url("{{assets.fonts.script}}") format("truetype"); }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 297mm; height: 198mm; }
+
+  .cert {
+    --u: 0.193359mm;
+    position: relative;
+    width: 297mm;
+    height: 198mm;
+    overflow: hidden;
+    background-image: url("{{certificateBg}}");
+    background-size: 100% 100%;
+    font-family: "CertSans", "Helvetica Neue", Arial, sans-serif;
+    color: #16396f;
+  }
+
+  .wash { position: absolute; background: #fcfdff; border-radius: calc(40 * var(--u));
+    filter: blur(calc(10 * var(--u))); }
+  /* Covers the sample name AND the rule under it (y 376-486); the rule is
+     redrawn below so nothing of "Your Name Here" survives at the edges. */
+  /* The artwork's own logo lockup is replaced with the brand logo. */
+  .wash-logo   { left: 28.2%; top: 2.4%;  width: 43.2%; height: 14.6%; }
+  .wash-name   { left: 21.5%; top: 35.8%; width: 57.5%; height: 11.6%; }
+  .wash-body   { left: 15.5%; top: 48.5%; width: 69%;   height: 10.6%; }
+  .wash-val-1  { left: 19%;   top: 63.4%; width: 16.5%; height: 3.2%; }
+  .wash-val-2  { left: 46.5%; top: 63.4%; width: 11%;   height: 3.2%; }
+  .wash-val-3  { left: 71%;   top: 63.4%; width: 12%;   height: 3.2%; }
+  /* Covers the sample "Rakhi" scribble and its line (y 700-782). */
+  .wash-sign   { left: 12%;   top: 68.4%; width: 21.8%; height: 8%; }
+  .wash-signer { left: 16.5%; top: 78.9%; width: 15%;   height: 2.9%; }
+  .wash-pill   { left: 42.8%; top: 81.2%; width: 14.4%; height: 4.4%;
+    border-radius: calc(30 * var(--u)); }
+  /* Tighter blur so the panel is fully opaque over the sample date
+     (y 818-829) without touching the "Issue Date" label above it. */
+  .wash-issued { left: 72.6%; top: 79.2%; width: 12.4%; height: 3.1%;
+    filter: blur(calc(5 * var(--u))); }
+
+  .row { position: absolute; left: 0; width: 100%; text-align: center; }
+
+  .brand-logo { position: absolute; left: 50%; transform: translateX(-50%);
+    top: 3.3%; height: calc(118 * var(--u)); width: auto; }
+
+  /* Redrawn artwork lines (the originals are washed out with the samples). */
+  .rule { position: absolute; left: 22.7%; top: 46%; width: 54.8%;
+    height: calc(3 * var(--u)); border-radius: calc(3 * var(--u));
+    background: linear-gradient(90deg, #1f6fd0 0%, #2f9bd8 55%, #34c48f 100%); }
+  .sig-line { position: absolute; left: 12.4%; top: 75.8%; width: 20.9%;
+    height: calc(2 * var(--u));
+    background: linear-gradient(90deg, #1f6fd0 0%, #2f9bd8 55%, #34c48f 100%); }
+
+  .name {
+    top: 36.8%;
+    font-family: "CertScript", cursive;
+    font-weight: 700;
+    color: #16386f;
+    line-height: 1.2;
+  }
+
+  .body {
+    top: 49.2%;
+    font-weight: 400;
+    font-size: calc(24 * var(--u));
+    line-height: 1.3;
+    color: #2f5185;
+    padding: 0 17%;
+  }
+
+  /* Values under the artwork's Internship Period / Department / Mode labels. */
+  .val { position: absolute; top: 64%; font-weight: 400; font-size: calc(19 * var(--u)); color: #2f5185; }
+  .val-1 { left: 19.9%; }
+  .val-2 { left: 47.5%; }
+  .val-3 { left: 71.9%; }
+
+  /* Signature over the artwork's left-hand line, then the signatory's name. */
+  .sign { position: absolute; left: 12.4%; top: 67.6%; width: 19.2%; height: calc(74 * var(--u)); }
+  .sign img { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+    height: calc(66 * var(--u)); }
+  .signer { position: absolute; left: 12.4%; top: 79.4%; width: 19.2%; text-align: center;
+    font-weight: 400; font-size: calc(18 * var(--u)); color: #2f5185; }
+
+  .certid { top: 81.6%; }
+  .certid span {
+    display: inline-block;
+    padding: calc(5 * var(--u)) calc(20 * var(--u)) calc(7 * var(--u));
+    border-radius: calc(40 * var(--u));
+    background: #eaf2fd;
+    border: calc(1.2 * var(--u)) solid rgba(31, 127, 224, 0.35);
+    font-weight: 600;
+    font-size: calc(20 * var(--u));
+    letter-spacing: calc(0.4 * var(--u));
+    color: #16396f;
+  }
+
+  /* Centred on the artwork's date position (x 1177), wide enough that a long
+     date like "20 September 2026" stays on one line. */
+  .issued { position: absolute; left: 71.5%; top: 79.7%; width: 13.4%; text-align: center;
+    white-space: nowrap; font-weight: 400; font-size: calc(16 * var(--u)); color: #2f5185; }
+</style>
 </head>
 <body>
-<div class="page">
-  <div class="certificate">
-    <div class="brand-row">
-      <img class="brand-logo" src="{{company.brandLogoAbsolute}}" alt="{{company.companyName}}" />
-    </div>
+<div class="cert">
+  <div class="wash wash-logo"></div>
+  <div class="wash wash-name"></div>
+  <div class="wash wash-body"></div>
+  <div class="wash wash-val-1"></div>
+  {{#if department}}<div class="wash wash-val-2"></div>{{/if}}
+  {{#if mode}}<div class="wash wash-val-3"></div>{{/if}}
+  {{#if company.signatory.signatureAbsolute}}<div class="wash wash-sign"></div>{{/if}}
+  <div class="wash wash-signer"></div>
+  <div class="wash wash-pill"></div>
+  <div class="wash wash-issued"></div>
 
-    <div class="cert-heading">Certificate of Internship</div>
-    <div class="cert-subheading">This certificate is proudly presented to</div>
+  {{#if company.brandLogoAbsolute}}<img class="brand-logo" src="{{company.brandLogoAbsolute}}" alt="{{company.companyName}}" />{{/if}}
 
-    <div class="recipient-name">{{employeeName}}</div>
+  <div class="row name" style="font-size: {{scaleFont recipientDisplayName 74 22}}">{{recipientDisplayName}}</div>
+  <div class="rule"></div>
+  <div class="sig-line"></div>
 
-    <div class="cert-body">
-      for successfully completing an internship as <strong>{{designation}}</strong>
-      at {{company.companyName}}, from {{formatDate startDate}} to
-      {{formatDate endDate}}. Their work was {{conductRemark}}.
-    </div>
-
-    <div class="cert-footer">
-      <div class="sig">
-        <div class="sig-line">
-          {{formatDate letterDate}}<br />Date Issued
-        </div>
-      </div>
-      <div class="cert-id">Certificate ID: {{certificateId}}</div>
-      <div class="sig">
-        <div class="sig-mark">
-          {{#if company.sealAbsolute}}<img class="seal" src="{{company.sealAbsolute}}" alt="company seal" />{{/if}}
-          {{#if company.signatory.signatureAbsolute}}<img class="sign" src="{{company.signatory.signatureAbsolute}}" alt="signature" />{{/if}}
-        </div>
-        <div class="sig-line">
-          {{company.signatory.name}}<br />{{company.signatory.title}}
-        </div>
-      </div>
-    </div>
+  <div class="row body">
+    has successfully completed the internship programme as <strong>{{designation}}</strong>
+    at {{company.companyName}}{{#if conductRemark}}. Their work was
+    {{conductRemark}}{{else}}, demonstrating exceptional skills and dedication{{/if}}.
   </div>
+
+  <div class="val val-1">{{formatDate startDate}} &ndash; {{formatDate endDate}}</div>
+  {{#if department}}<div class="val val-2">{{department}}</div>{{/if}}
+  {{#if mode}}<div class="val val-3">{{mode}}</div>{{/if}}
+
+  {{#if company.signatory.signatureAbsolute}}
+  <div class="sign"><img src="{{company.signatory.signatureAbsolute}}" alt="signature" /></div>
+  {{/if}}
+  <div class="signer">{{company.signatory.name}}</div>
+
+  <div class="row certid"><span>{{certificateId}}</span></div>
+  <div class="issued">{{formatDate issueDate}}</div>
 </div>
 </body>
 </html>

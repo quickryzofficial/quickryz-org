@@ -18,6 +18,13 @@ function registerHelpers() {
   Handlebars.registerHelper("formatMoney", helpers.formatMoney);
   Handlebars.registerHelper("amountInWordsWithPaise", helpers.amountInWordsWithPaise);
   Handlebars.registerHelper("eq", (a, b) => a === b);
+  // Shrinks a heading to fit its line: full size up to `maxChars`, then
+  // proportionally smaller, so long names stay on one line.
+  Handlebars.registerHelper("scaleFont", (text, basePx, maxChars) => {
+    const len = String(text || "").length;
+    const size = len > maxChars ? (basePx * maxChars) / len : basePx;
+    return new Handlebars.SafeString(`calc(${size.toFixed(1)} * var(--u))`);
+  });
   helpersRegistered = true;
 }
 
@@ -25,10 +32,13 @@ function registerHelpers() {
 // page.setContent() (its origin is about:blank, and cross-scheme local
 // file access is blocked). Embedding images as base64 data URIs sidesteps
 // that entirely and needs no navigation/temp-file workaround.
+// SafeString: base64 padding ("=") would otherwise be HTML-escaped by
+// Handlebars into &#x3D; and break the URI.
 function imageToDataUri(absPath) {
   const buf = fs.readFileSync(absPath);
-  const ext = path.extname(absPath).slice(1) || "png";
-  return `data:image/${ext};base64,${buf.toString("base64")}`;
+  const ext = (path.extname(absPath).slice(1) || "png").toLowerCase();
+  const type = ext === "jpg" ? "jpeg" : ext;
+  return new Handlebars.SafeString(`data:image/${type};base64,${buf.toString("base64")}`);
 }
 
 function loadCompanyConfig() {
@@ -45,6 +55,12 @@ function loadCompanyConfig() {
     const sealPath = path.join(ROOT, company.sealImage);
     company.sealAbsolute = fs.existsSync(sealPath) ? imageToDataUri(sealPath) : null;
   }
+  if (company.trainer && company.trainer.signatureImage) {
+    const trainerSig = path.join(ROOT, company.trainer.signatureImage);
+    company.trainer.signatureAbsolute = fs.existsSync(trainerSig)
+      ? imageToDataUri(trainerSig)
+      : null;
+  }
   if (company.signatory && company.signatory.signatureImage) {
     const sigPath = path.join(ROOT, company.signatory.signatureImage);
     company.signatory.signatureAbsolute = fs.existsSync(sigPath)
@@ -52,6 +68,39 @@ function loadCompanyConfig() {
       : null;
   }
   return company;
+}
+
+const ASSET_DIR = path.join(ROOT, "templates", "assets");
+
+// Shared template assets (certificate artwork + bundled fonts) as data URIs:
+// Chromium can't load file:// resources into a setContent() page, and fonts
+// must be embedded for the PDF to render them. Read once per process.
+let assetCache = null;
+function loadTemplateAssets() {
+  if (assetCache) return assetCache;
+  const fontDir = path.join(ASSET_DIR, "fonts");
+  const font = (file) => {
+    const full = path.join(fontDir, file);
+    return fs.existsSync(full)
+      ? new Handlebars.SafeString(`data:font/ttf;base64,${fs.readFileSync(full).toString("base64")}`)
+      : null;
+  };
+  // JPEG keeps the embedded artwork (and so each certificate PDF) small.
+  const artwork = (file) => {
+    const full = path.join(ASSET_DIR, file);
+    return fs.existsSync(full) ? imageToDataUri(full) : null;
+  };
+  assetCache = {
+    artwork,
+    fonts: {
+      poppins400: font("Poppins-Regular.ttf"),
+      poppins500: font("Poppins-Medium.ttf"),
+      poppins600: font("Poppins-SemiBold.ttf"),
+      poppins700: font("Poppins-Bold.ttf"),
+      script: font("DancingScript.ttf"),
+    },
+  };
+  return assetCache;
 }
 
 function loadJsonFile(filePath) {
@@ -108,10 +157,31 @@ function renderHtml(typeId, data) {
     path.join(ROOT, "templates", "assets", "styles.css"),
     "utf8"
   );
-  return template({ ...data, company, styles });
+  // Certificates share one template: give it the recipient name and issue
+  // date under common names, whichever field the type actually uses.
+  const certificateFields =
+    cfg.template.endsWith("certificate.html")
+      ? {
+          recipientDisplayName: data.recipientName || data.employeeName,
+          issueDate: data.awardDate || data.letterDate,
+          certificateBg: loadTemplateAssets().artwork(cfg.background || "certificate-bg.jpg"),
+          certificateMascot: cfg.mascot ? loadTemplateAssets().artwork(cfg.mascot) : null,
+          certificateMascotBox: cfg.mascotBox || "",
+        }
+      : {};
+
+  return template({
+    ...data,
+    ...certificateFields,
+    company,
+    styles,
+    assets: loadTemplateAssets(),
+    docType: typeId,
+    heading: cfg.heading,
+  });
 }
 
-async function htmlToPdf(html, outputPath, { landscape = false } = {}) {
+async function htmlToPdf(html, outputPath, { landscape = false, pageSize = null } = {}) {
   const puppeteer = require("puppeteer");
   const browser = await puppeteer.launch({
     headless: true,
@@ -122,8 +192,8 @@ async function htmlToPdf(html, outputPath, { landscape = false } = {}) {
     await page.setContent(html, { waitUntil: "networkidle0" });
     await page.pdf({
       path: outputPath,
-      format: "A4",
-      landscape,
+      ...(pageSize ? pageSize : { format: "A4" }),
+      landscape: pageSize ? false : landscape,
       printBackground: true,
       margin: { top: "0", bottom: "0", left: "0", right: "0" },
     });
@@ -139,7 +209,7 @@ async function generate(typeId, data, options = {}) {
   validateData(typeId, data);
   const html = renderHtml(typeId, data);
   const outputPath = options.outputPath || buildOutputPath(typeId, data, options);
-  await htmlToPdf(html, outputPath, { landscape: cfg.landscape });
+  await htmlToPdf(html, outputPath, { landscape: cfg.landscape, pageSize: cfg.pageSize });
   return outputPath;
 }
 

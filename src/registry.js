@@ -4,6 +4,10 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 
+// The certificate artwork is 3:2, so certificates print at that ratio
+// instead of A4 (which would letterbox or distort the design).
+const CERTIFICATE_PAGE = { width: "297mm", height: "198mm" };
+
 // Single source of truth: type ID -> template, schema, output naming, page setup.
 // Adding a new document type = add one entry here + one template + one schema.
 const REGISTRY = {
@@ -66,23 +70,36 @@ const REGISTRY = {
   "internship-certificate": {
     label: "Internship Certificate",
     template: "internship-certificate.html",
+    background: "certificate-internship.jpg",
     schema: "internship-certificate.schema.json",
     outPrefix: "InternshipCertificate",
     landscape: true,
+    pageSize: CERTIFICATE_PAGE,
   },
   "course-certificate": {
     label: "Course Completion Certificate",
-    template: "course-certificate.html",
+    template: "certificate.html",
+    heading: "Certificate of Completion",
+    background: "certificate-course.jpg",
+    // Drawn above the printed title, as the artwork has it overlapping.
+    mascot: "certificate-course-mascot.png",
+    mascotBox: "left: 71.94%; top: 0; width: 23.44%; height: 34.96%;",
     schema: "course-certificate.schema.json",
     outPrefix: "CourseCertificate",
     landscape: true,
+    pageSize: CERTIFICATE_PAGE,
   },
   "appreciation-certificate": {
     label: "Appreciation Certificate (A&B)",
-    template: "appreciation-certificate.html",
+    template: "certificate.html",
+    heading: "Certificate of Appreciation",
+    background: "certificate-appreciation.jpg",
+    mascot: "certificate-appreciation-mascot.png",
+    mascotBox: "left: 77.6%; top: 1%; width: 12.6%; height: 25.8%;",
     schema: "appreciation-certificate.schema.json",
     outPrefix: "AppreciationCertificate",
     landscape: true,
+    pageSize: CERTIFICATE_PAGE,
   },
   invoice: {
     label: "Invoice / Tax Invoice",

@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  /* The QuickRyz certificate artwork is the page; live text is positioned on
+     top of it. Positions are measured from the 1536x1024 original, so one
+     "unit" below is one pixel of that artwork. The artwork's own placeholder
+     text is hidden under soft white washes (its centre is near-white, so the
+     wash reads as the design's own glow). */
+  @page { size: 297mm 198mm; margin: 0; }
+
+  @font-face { font-family: "CertSans"; font-weight: 400; src: url("{{assets.fonts.poppins400}}") format("truetype"); }
+  @font-face { font-family: "CertSans"; font-weight: 500; src: url("{{assets.fonts.poppins500}}") format("truetype"); }
+  @font-face { font-family: "CertSans"; font-weight: 600; src: url("{{assets.fonts.poppins600}}") format("truetype"); }
+  @font-face { font-family: "CertSans"; font-weight: 700; src: url("{{assets.fonts.poppins700}}") format("truetype"); }
+  @font-face { font-family: "CertScript"; font-weight: 700; src: url("{{assets.fonts.script}}") format("truetype"); }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; width: 297mm; height: 198mm; }
+
+  .cert {
+    --u: 0.193359mm;              /* one artwork pixel */
+    --navy: #16396f;
+    --ink: #2f5185;
+    --blue: #1f7fe0;
+    position: relative;
+    width: 297mm;
+    height: 198mm;
+    overflow: hidden;
+    background-image: url("{{certificateBg}}");
+    background-size: 100% 100%;
+    font-family: "CertSans", "Helvetica Neue", Arial, sans-serif;
+    color: var(--navy);
+  }
+
+  /* Opaque panels, blurred so their edges melt into the artwork's near-white
+     centre. They hide the artwork's placeholder text; solid centres mean no
+     ghosting, unlike a translucent gradient. */
+  .wash { position: absolute; background: #fbfdff; border-radius: calc(60 * var(--u));
+    filter: blur(calc(11 * var(--u))); }
+  /* The artwork's own logo lockup is covered and replaced with the brand
+     logo (config brandLogo), so every document carries the same mark. */
+  .wash-logo  { left: 28.2%; top: 2.6%;  width: 43.2%; height: 15.4%; }
+  .wash-tagline { left: 26.5%; top: 17.6%; width: 47%; height: 4%;
+    filter: blur(calc(7 * var(--u))); }
+  .wash-title { left: 9%; top: 21.6%; width: 82%; height: 10.6%; }
+  .wash-name  { left: 15%; top: 32.4%; width: 70%; height: 17%; }
+  .wash-body  { left: 21%; top: 49.4%; width: 58%; height: 14.8%; }
+  /* The artwork's sample signature scribbles are always washed out (both
+     sides); their lines are redrawn below. The left labels are only washed
+     when a trainer replaces them. */
+  .wash-mark-left  { left: 12.2%; top: 63.6%; width: 22%;   height: 12.8%; }
+  .wash-mark-right { left: 65.8%; top: 65.6%; width: 22%;   height: 10.8%; }
+  /* The artwork's signature-block labels and "Certificate Number" caption are
+     washed out and printed live, so they stay crisp on every artwork. */
+  .wash-labels-left  { left: 11.5%; top: 74.4%; width: 23%;   height: 7%;
+    filter: blur(calc(7 * var(--u))); }
+  .wash-labels-right { left: 64.8%; top: 74.6%; width: 23.4%; height: 7.2%;
+    filter: blur(calc(7 * var(--u))); }
+  .wash-certno-label { left: 32%;   top: 81.3%; width: 36%;   height: 3.2%;
+    filter: blur(calc(6 * var(--u))); }
+  .wash-pill { left: 40%; top: 83.2%; width: 20%; height: 4.6%;
+    background: #fbfdff; border-radius: calc(30 * var(--u)); filter: blur(calc(8 * var(--u))); }
+
+  .row { position: absolute; left: 0; width: 100%; text-align: center; }
+
+  .brand-logo { position: absolute; left: 50%; transform: translateX(-50%);
+    top: 3.5%; height: calc(120 * var(--u)); width: auto; }
+
+  /* Printed live so the separators are bold dots rather than the artwork's
+     slashes; matches the artwork's spacing and navy. */
+  .tagline { top: 18.2%; font-weight: 500; font-size: calc(26 * var(--u));
+    letter-spacing: calc(3 * var(--u)); color: #1e3f72; }
+  .tagline .dot { font-weight: 700; color: #1f7fe0;
+    margin: 0 calc(6 * var(--u)); font-size: calc(30 * var(--u)); vertical-align: calc(-1 * var(--u)); }
+
+  .title {
+    top: 22.4%;
+    font-weight: 700;
+    font-size: calc(74 * var(--u));
+    letter-spacing: calc(-0.5 * var(--u));
+    color: #163a72;
+    text-shadow: 0 calc(3 * var(--u)) calc(16 * var(--u)) rgba(22, 58, 114, 0.18);
+  }
+
+  .certify { top: 33%; font-weight: 400; font-size: calc(32 * var(--u)); color: var(--ink); }
+
+  .name {
+    top: 36.4%;
+    font-family: "CertScript", cursive;
+    font-weight: 700;
+    color: #16386f;
+    line-height: 1.25;
+  }
+
+  .rule {
+    position: absolute;
+    left: 21.3%;
+    width: 57.3%;
+    top: 47.9%;
+    height: calc(3 * var(--u));
+    border-radius: calc(3 * var(--u));
+    background: linear-gradient(90deg, #1f6fd0 0%, #2f9bd8 55%, #34c48f 100%);
+  }
+
+  .body {
+    top: 50.5%;
+    font-weight: 400;
+    font-size: calc(30 * var(--u));
+    line-height: 1.38;
+    color: var(--ink);
+    padding: 0 21%;
+  }
+
+  /* Redrawn signature lines (the artwork's are washed out with the samples). */
+  .sig-line { position: absolute; top: 74.9%; height: calc(2 * var(--u));
+    background: linear-gradient(90deg, #1f6fd0 0%, #2f9bd8 55%, #34c48f 100%); }
+  .sig-line.left  { left: 12.9%; width: 20.3%; }
+  .sig-line.right { left: 66.5%; width: 20.4%; }
+
+  /* The authorised signatory's signature sits on the right-hand line; a
+     trainer, when given, replaces the artwork's left-hand slogan. */
+  .sign-left, .sign-right { position: absolute; top: 66.6%; width: 21%;
+    height: calc(80 * var(--u)); }
+  .sign-left { left: 12.5%; }
+  .sign-right { left: 65.8%; }
+  .sign-left img, .sign-right img { position: absolute; left: 50%; bottom: 0;
+    transform: translateX(-50%); height: calc(78 * var(--u)); }
+  .sign-left img { height: calc(64 * var(--u)); }
+  .labels { position: absolute; width: 22%; text-align: center; }
+  .labels.left  { left: 12%;   top: 75.4%; }
+  .labels.right { left: 65.8%; top: 75.7%; }
+  .labels .who { font-weight: 600; font-size: calc(23 * var(--u)); color: #1f7fe0; }
+  .labels .role { margin-top: calc(4 * var(--u)); font-weight: 400;
+    font-size: calc(19 * var(--u)); color: #5c7fa8; }
+  .certno-label { top: 81.9%; font-weight: 400; font-size: calc(17 * var(--u)); color: #5c7fa8; }
+
+  /* The artwork's sample number pill is washed out and redrawn here, so the
+     number stays crisp whatever its length. */
+  /* The artwork's mascot, drawn over the title so the title tucks behind it
+     exactly as in the design (the title wash would otherwise clip it). */
+  .mascot { position: absolute; }   /* placed per type, see registry mascotBox */
+
+  .certno { top: 83.9%; }
+  .certno span {
+    display: inline-block;
+    padding: calc(2 * var(--u)) calc(15 * var(--u)) calc(4 * var(--u));
+    border-radius: calc(40 * var(--u));
+    background: #eaf2fd;
+    border: calc(1.2 * var(--u)) solid rgba(31, 127, 224, 0.35);
+    font-weight: 600;
+    font-size: calc(18 * var(--u));
+    letter-spacing: calc(0.4 * var(--u));
+    color: #16396f;
+  }
+  .issued-inline { margin-left: calc(7 * var(--u)); color: #7d97b5; }
+</style>
+</head>
+<body>
+<div class="cert">
+  <div class="wash wash-logo"></div>
+  <div class="wash wash-tagline"></div>
+  <div class="wash wash-title"></div>
+  <div class="wash wash-name"></div>
+  <div class="wash wash-body"></div>
+  <div class="wash wash-mark-left"></div>
+  <div class="wash wash-mark-right"></div>
+  <div class="wash wash-labels-left"></div>
+  <div class="wash wash-labels-right"></div>
+  <div class="wash wash-certno-label"></div>
+  <div class="wash wash-pill"></div>
+
+  {{#if company.brandLogoAbsolute}}<img class="brand-logo" src="{{company.brandLogoAbsolute}}" alt="{{company.companyName}}" />{{/if}}
+
+  <div class="row tagline">INNOVATION<span class="dot">&bull;</span>TECHNOLOGY<span class="dot">&bull;</span>GROWTH</div>
+
+  <div class="row title">{{heading}}</div>
+  <div class="row certify">This is to certify that</div>
+  <div class="row name" style="font-size: {{scaleFont recipientDisplayName 76 22}}">{{recipientDisplayName}}</div>
+  <div class="rule"></div>
+
+  <div class="row body">
+    {{#if (eq docType "course-certificate")}}
+      has successfully completed the course <strong>&ldquo;{{title}}&rdquo;</strong>{{#if reason}},
+      {{reason}}{{else}} and demonstrated exceptional skills and dedication
+      in achieving the course objectives{{/if}}.
+    {{/if}}
+    {{#if (eq docType "internship-certificate")}}
+      has successfully completed an internship as <strong>{{designation}}</strong> at
+      {{company.companyName}}, from {{formatDate startDate}} to {{formatDate endDate}}.
+      Their work was {{conductRemark}}.
+    {{/if}}
+    {{#if (eq docType "appreciation-certificate")}}
+      {{#if title}}is presented with the <strong>{{title}}</strong><br />{{/if}}
+      in recognition of {{reason}}.
+    {{/if}}
+  </div>
+
+  <div class="sig-line left"></div>
+  <div class="sig-line right"></div>
+
+  <div class="labels left">
+    {{#if trainerName}}
+    <div class="who">{{trainerName}}</div>
+    <div class="role">{{#if trainerTitle}}{{trainerTitle}}{{else}}Trainer{{/if}}</div>
+    {{else}}
+    <div class="who">Learning Today</div>
+    <div class="role">Build Tomorrow</div>
+    {{/if}}
+  </div>
+
+  <div class="labels right">
+    <div class="who">{{#if company.shortName}}{{company.shortName}}{{else}}{{company.companyName}}{{/if}}</div>
+    <div class="role">{{company.signatory.title}}</div>
+  </div>
+
+  {{#if trainerName}}{{#if company.trainer.signatureAbsolute}}
+  <div class="sign-left"><img src="{{company.trainer.signatureAbsolute}}" alt="trainer signature" /></div>
+  {{/if}}{{/if}}
+
+  {{#if company.signatory.signatureAbsolute}}
+  <div class="sign-right"><img src="{{company.signatory.signatureAbsolute}}" alt="signature" /></div>
+  {{/if}}
+
+  {{#if certificateMascot}}<img class="mascot" style="{{certificateMascotBox}}" src="{{certificateMascot}}" alt="" />{{/if}}
+
+  <div class="row certno-label">Certificate Number{{#if issueDate}}<span class="issued-inline">&bull; Issued {{formatDate issueDate}}</span>{{/if}}</div>
+  <div class="row certno"><span>{{certificateId}}</span></div>
+</div>
+</body>
+</html>

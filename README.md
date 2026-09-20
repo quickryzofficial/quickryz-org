@@ -103,9 +103,9 @@ needed:
 | `generate-salary-structure.sh` | Salary Structure |
 | `generate-payslip.sh` | Payslip (defaults to the current month) |
 | `generate-experience-letter.sh` | Experience Certificate |
-| `generate-internship-certificate.sh` | Internship Certificate |
-| `generate-course-certificate.sh` | Course Completion Certificate |
-| `generate-appreciation-certificate.sh` | Appreciation Certificate |
+| `generate-internship-certificate.sh` | Internship Certificate (designed artwork) |
+| `generate-course-certificate.sh` | Course Completion Certificate (designed artwork) |
+| `generate-appreciation-certificate.sh` | Appreciation Certificate (designed artwork) |
 
 How the values work:
 - Each variable is the JSON field in `UPPER_SNAKE` form (`CANDIDATE_NAME` →
@@ -148,6 +148,36 @@ CLIENT_STATE="Karnataka"   # place of supply, decides the GST split
 
 The same invoice can be made from JSON with
 `hrgen invoice data/samples/invoice.sample.json`.
+
+### Certificates
+
+Each certificate prints on its own QuickRyz artwork, on a 297x198mm page (the
+artwork's 3:2 ratio) rather than A4, using the bundled Poppins and Dancing
+Script fonts in [`templates/assets/fonts/`](templates/assets/fonts/) — no
+internet needed at generation time. Only the fields that change are printed
+over the artwork; its title, labels, icons, mascot and badge are untouched.
+
+| Certificate | Artwork | Template |
+|---|---|---|
+| Course Completion | `certificate-course.jpg` | `templates/certificate.html` |
+| Internship | `certificate-internship.jpg` | `templates/internship-certificate.html` |
+| Appreciation | `certificate-bg.jpg` | `templates/certificate.html` |
+
+**Internship** fills the artwork's own layout: the details row shows
+`START_DATE`–`END_DATE`, `DEPARTMENT` and `MODE` (e.g. "Online / On-site");
+the left block is the authorised signatory with their signature over the line;
+the Certificate ID and Issue Date sit in the badge row.
+
+**Course and appreciation** share one template. `TRAINER_NAME` fills the left
+signature block (trainer or mentor); left blank, the artwork's own "Learning
+Today / Build Tomorrow" shows instead. The right block is the authorised
+signatory.
+
+Long names shrink automatically to stay on one line. To restyle a certificate,
+drop new artwork of the same 3:2 proportions into `templates/assets/`, point
+the type's `background` at it in [`src/registry.js`](src/registry.js), and
+adjust the positions at the top of its template — they are measured in artwork
+pixels (`--u`).
 
 ---
 

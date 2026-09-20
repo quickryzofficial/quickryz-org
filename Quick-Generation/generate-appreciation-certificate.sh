@@ -5,6 +5,8 @@ set -a
 RECIPIENT_NAME="Rahul Sharma"
 TITLE="Above & Beyond Award"              # optional
 REASON="outstanding contribution to the Q2 release, going well beyond the call of duty"
+TRAINER_NAME="Pankaj Gupta"                           # optional: left signature block (blank = keep the artwork's slogan)
+TRAINER_TITLE="Trainer"                   # shown under TRAINER_NAME
 CERTIFICATE_ID="QR-AB-2026-0009"
 AWARD_DATE="$(date +%F)"                  # today
 set +a

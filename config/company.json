@@ -1,5 +1,6 @@
 {
   "companyName": "QuickRyz Technologies Private Limited",
+  "shortName": "QuickRyz Technologies",
   "tagline": "Rise People. Transform Business.",
   "address": "Marhowrah, Chapra, Saran – 841418, Bihar",
   "registeredOffice": "Marhowrah, Chapra, Saran – 841418, Bihar",
@@ -19,6 +20,9 @@
     "name": "Pankaj Gupta",
     "title": "Authorized Signatory",
     "signatureImage": "templates/assets/signature.png"
+  },
+  "trainer": {
+    "signatureImage": "templates/assets/trainer-signature.png"
   },
   "bank": {
     "bankName": "",

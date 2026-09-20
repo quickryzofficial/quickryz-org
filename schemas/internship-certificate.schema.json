@@ -12,13 +12,43 @@
     "certificateId"
   ],
   "properties": {
-    "employeeId": { "type": "string", "minLength": 1 },
-    "employeeName": { "type": "string", "minLength": 1 },
-    "designation": { "type": "string", "minLength": 1 },
-    "startDate": { "type": "string", "format": "date" },
-    "endDate": { "type": "string", "format": "date" },
-    "conductRemark": { "type": "string", "minLength": 1 },
-    "letterDate": { "type": "string", "format": "date" },
-    "certificateId": { "type": "string", "minLength": 1 }
+    "employeeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employeeName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "designation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "startDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "conductRemark": {
+      "type": "string",
+      "minLength": 1
+    },
+    "letterDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "certificateId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "department": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string"
+    }
   }
 }

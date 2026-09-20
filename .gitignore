@@ -6,3 +6,9 @@ data/*/
 templates/assets/signature.png
 templates/assets/seal.png
 resources/Authorised-Signatory/
+templates/assets/trainer-signature.png
+.DS_Store
+# Source artwork and signature originals stay local (large, and not needed to run)
+resources/
+# Local invoice numbering state (numbers come from output/invoice/ now)
+data/invoice-counter.json

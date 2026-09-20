@@ -5,19 +5,19 @@
 source "$(dirname "$0")/_common.sh"
 set -a
 # ======================= Bill To =======================
-CLIENT_NAME="ABC Technologies Private Limited"
-CLIENT_ADDRESS="123 Business Park, Bengaluru, Karnataka – 560001"
+CLIENT_NAME="MM Volttech Private Limited"
+CLIENT_ADDRESS="Gandhi Nagar Pakhan, Marhowrah,Dist. Saran, Bihar - 841418"
 GST=false                     # true -> GST is calculated and added automatically
-CLIENT_STATE="Karnataka"      # place of supply: same state as QuickRyz GST -> CGST+SGST, else IGST
+CLIENT_STATE="Bihar"      # place of supply: same state as QuickRyz GST -> CGST+SGST, else IGST
 CLIENT_GSTIN=""               # optional
 CLIENT_ATTN="Accounts Payable"  # optional
-CLIENT_EMAIL="accounts@example.com"  # optional
+CLIENT_EMAIL="info@mmvoltech.in"  # optional
 
 # ======================= Line items =======================
 # One per line: "Title | Description (optional) | Qty | Rate"
 ITEMS=(
-  "Software Development & IT Consulting | Professional services for digital transformation | 1 | 75000"
-  "QA & Test Automation Services | Automation framework and quality engineering support | 1 | 25000"
+  "Domain(3Yr) and Email(1Yr) | Professional services for digital transformation | 1 | 7500"
+  "Software Development & IT Consulting | Website design and Development | 1 | 3500"
 )
 
 # ======================= Optional overrides =======================
